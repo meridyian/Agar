@@ -1039,7 +1039,8 @@ MonoBehaviour:
   NestedObjects:
   - {fileID: 5509150460477940517}
   - {fileID: 5509150460832955721}
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 5509150461707433352}
   SimulationBehaviours: []
 --- !u!114 &5509150461707433354
 MonoBehaviour:
@@ -1095,6 +1096,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7123c618a7ecdc44abe182a0c726bbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  localCamera: {fileID: 0}
+  playerHitColliders: []
 --- !u!1001 &8603110288196399037
 PrefabInstance:
   m_ObjectHideFlags: 0

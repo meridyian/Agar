@@ -299,7 +299,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1266653295}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -47.751797, y: 0, z: 15.074867}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -453,6 +453,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 289478a40791d0c49b6538e46b251888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 5509150461707433356, guid: 57a5547f8f1bcda40a45df2c9fa997a6, type: 3}
+  BotPrefab: {fileID: 2439671789182557438, guid: 4387ebf4167dfb84695431d22dee8a1f, type: 3}
+  foodPrefab: {fileID: 551913312850727419, guid: 591138e35a180ce4c98c674ef057afde, type: 3}
+  botsList: []
 --- !u!114 &1615841899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,7 +479,8 @@ MonoBehaviour:
     RawGuidValue: 3a25138425044e14a05e82feedacdd57
   NestedObjects: []
   NetworkedBehaviours: []
-  SimulationBehaviours: []
+  SimulationBehaviours:
+  - {fileID: 1615841898}
 --- !u!1 &1871451596
 GameObject:
   m_ObjectHideFlags: 0

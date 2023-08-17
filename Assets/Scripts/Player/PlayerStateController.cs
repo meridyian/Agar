@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSpawner : MonoBehaviour
+public class PlayerStateController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public bool isBot;
     void Start()
     {
         
