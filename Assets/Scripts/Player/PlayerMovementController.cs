@@ -64,8 +64,6 @@ public class PlayerMovementController : NetworkBehaviour
             //m_movement.y = 0f;
             rb.AddForce(m_movement * playerSpeed);
 
-
-            
         }
     }
 }
