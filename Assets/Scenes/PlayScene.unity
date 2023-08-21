@@ -456,6 +456,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 5509150461707433356, guid: 57a5547f8f1bcda40a45df2c9fa997a6, type: 3}
   BotPrefab: {fileID: 2439671789182557438, guid: 4387ebf4167dfb84695431d22dee8a1f, type: 3}
   foodPrefab: {fileID: 551913312850727419, guid: 591138e35a180ce4c98c674ef057afde, type: 3}
+  obstaclePrefab: {fileID: 4262376074773329014, guid: 7cc92f22d514b10459c195bef277dcee, type: 3}
   botsList: []
 --- !u!114 &1615841899
 MonoBehaviour:

@@ -12,7 +12,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject BotPrefab;
     [SerializeField] private GameObject foodPrefab;
-    //[SerializeField] private GameObject obstaclePrefab;
+    [SerializeField] private GameObject obstaclePrefab;
     
     // bot attributes
     private const int desiredNumberofPlayers = 3;
@@ -38,6 +38,18 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         }
 
         isFoodSpawned = true;
+    }
+    
+    public void SpawnObstacle()
+    {
+        for (int i = 0; i < 30; i++)
+        {
+            // belki bi gameobje altınd atoplarsın sonra
+            NetworkObject spawnedFood = Runner.Spawn(obstaclePrefab, Utils.GetRandomSpawnPosition(obstaclePrefab.transform.localScale.x) , Quaternion.identity);
+            //spawnedFood.GetComponent<Rigidbody>().isKinematic = true;
+        }
+
+        isObstacleSpawned = true;
     }
     
     // check the current number of players you have, if it is not enough spawn bots
@@ -73,6 +85,8 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
             
             if(!isFoodSpawned)
                 SpawnFood();
+            if(!isObstacleSpawned)
+                SpawnObstacle();
         }
     }
 }
