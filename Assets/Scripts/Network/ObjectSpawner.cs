@@ -33,7 +33,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         for (int i = 0; i < 100; i++)
         {
             // belki bi gameobje altınd atoplarsın sonra
-            NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition() + Vector3.one*0.25f, Quaternion.identity);
+            NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition(foodPrefab.transform.localScale.x) , Quaternion.identity);
             //spawnedFood.GetComponent<Rigidbody>().isKinematic = true;
         }
 
@@ -47,7 +47,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         int numberOfBotsToSpawn = desiredNumberofPlayers - Runner.SessionInfo.PlayerCount - botsList.Count;
         for (int i = 0; i < numberOfBotsToSpawn; i++)
         {
-            NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(), Quaternion.identity,null, InitializeBeforeBotSpawn);
+            NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(BotPrefab.transform.localScale.x), Quaternion.identity,null, InitializeBeforeBotSpawn);
         }
     }
 

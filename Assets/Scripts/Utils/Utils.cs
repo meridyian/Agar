@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class Utils 
 {
-    public static Vector3 GetRandomSpawnPosition()
+    public static Vector3 GetRandomSpawnPosition(float radius)
     {
-        return new Vector3(Random.Range(0, 30), 0f, Random.Range(0, 30) * 0.7f);
+        return new Vector3(Random.Range(0, 30), radius/2f, Random.Range(0, 30) * 0.7f);
     }
 
 

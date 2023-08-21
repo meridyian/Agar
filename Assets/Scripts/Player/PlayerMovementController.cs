@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using Cinemachine;
 using Fusion;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovementController : NetworkBehaviour
 {
     public static PlayerMovementController Local { get; set; }
+    private PlayerStateController _playerStateController;
     
     // camera settings
     public CinemachineFreeLook localCamera;
@@ -15,6 +17,8 @@ public class PlayerMovementController : NetworkBehaviour
     
     // other components
     private Rigidbody rb;
+    public bool splitPressed;
+
     
     //movement
     private PlayerControls controls;
@@ -23,13 +27,13 @@ public class PlayerMovementController : NetworkBehaviour
     private float playerSpeed = 3f;
 
     // for collision detection
-    [SerializeField] private Collider[] playerHitColliders;
 
-    private void Awake()
+     void Awake()
     {
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
         localCamera = transform.GetChild(1).GetComponent<CinemachineFreeLook>();
         controls = new PlayerControls();
+       
 
     }
 
@@ -44,6 +48,7 @@ public class PlayerMovementController : NetworkBehaviour
             localCamera.transform.parent = null;
             controls.Player.Enable();
             cameraMainTransform = Camera.main.transform;
+          
         }
         else
         {
@@ -53,17 +58,23 @@ public class PlayerMovementController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        // burda neden state check ettik ?? 
         
         if (Object.HasStateAuthority)
         {
+           
+           
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
             //m_movement = cameraMainTransform.forward * m_movement.z + cameraMainTransform.right * m_movement.x;
             //m_movement.y = 0f;
             rb.AddForce(m_movement * playerSpeed);
-
+            
         }
+        
+
     }
+
+
+
 }
