@@ -41,7 +41,12 @@ public class PlayerStateController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        MovePartsTogether();
+        if (splittedPieces.Count > 0)
+        {
+            var rigidb = splittedPieces[0].GetComponent<Rigidbody>();
+            Vector3 moveDir = (rb.transform.position - rigidb.transform.position).normalized;
+            rigidb.AddForce(moveDir * 0.1f, ForceMode.Impulse );
+        }
     }
 
 
@@ -95,13 +100,16 @@ public class PlayerStateController : NetworkBehaviour
     {
         splittedPieces.Add(transform.GetComponent<NetworkObject>());
         playerSize -= playerSize * 0.3f;
-        transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
+        transform.localScale = playersizeVector;
         NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position,
             Quaternion.identity);
+        splitPiece.transform.localScale = playersizeVector;
         splitPiece.GetComponent<Rigidbody>().AddForce(Vector3.forward, ForceMode.Impulse);
         splitPiece.transform.parent = transform;
         splittedPieces.Add(splitPiece);
     }
+    /*
 
     public void MovePartsTogether()
     {
@@ -123,6 +131,7 @@ public class PlayerStateController : NetworkBehaviour
             }
         }
     }
+    */
 
 
   
