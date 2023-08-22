@@ -87,8 +87,7 @@ public class PlayerStateController : NetworkBehaviour
             playerSize += other.transform.localScale.magnitude * 0.2f;
 
         }
-        // bot olma durumu kaldı 
-        
+
         // transformunun küçük olması kaldı zaten o da game over
     }
 
@@ -175,28 +174,6 @@ public class PlayerStateController : NetworkBehaviour
        
 
     }
-    /*
-    private void MoveSplitCellsTogether()
-    {
-        if (splittedPieces.Count > 0)
-        {
-            Vector3 centerPosition = transform.position;
-
-            foreach (NetworkObject piece in splittedPieces)
-            {
-                centerPosition += piece.transform.position;
-            }
-
-            centerPosition /= splittedPieces.Count;
-
-            foreach (NetworkObject cell in splittedPieces)
-            {
-                Rigidbody rb = cell.GetComponent<Rigidbody>();
-                Vector3 moveDirection = (centerPosition - cell.transform.position).normalized;
-                rb.AddForce(moveDirection  * 0.5f, ForceMode.Impulse);
-            }
-        }
-    }
-    */
+    
   
 }
