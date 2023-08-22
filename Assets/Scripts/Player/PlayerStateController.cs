@@ -72,13 +72,24 @@ public class PlayerStateController : NetworkBehaviour
 
         
         // check if colliding with obstacle
-        if (other.gameObject.CompareTag("Obstacle"))
+        else if (other.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("collided with obstacle");
             // call split function
             ObstacleSplit();
         }
+
+        else if (playerSize > other.transform.localScale.magnitude)
+        {
+            Debug.Log("collided with player");
+            other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.2f);
+            other.gameObject.SetActive(false);
+            playerSize += other.transform.localScale.magnitude * 0.2f;
+
+        }
+        // bot olma durumu kaldı 
         
+        // transformunun küçük olması kaldı zaten o da game over
     }
 
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
