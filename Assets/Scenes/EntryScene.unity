@@ -782,6 +782,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkRunnerPrefab: {fileID: 7991007779144084483, guid: b92c5f9c2903a2a42855fc405e4d8f5f, type: 3}
+  playerDataPrefab: {fileID: 4292940674568377118, guid: c22b98b2bc94b2d44bd2a26a01850494, type: 3}
+  userName: {fileID: 2006906674}
+  usernamePlaceHolder: {fileID: 593344003}
   gameSceneName: PlayScene
   joinButton: {fileID: 794168619}
 --- !u!1 &1040957824

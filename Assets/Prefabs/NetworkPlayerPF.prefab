@@ -462,6 +462,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   isBot: 0
   _playerSize: 1
+  splitRadius: 2
   splittedPiecePref: {fileID: 4255914972489698455, guid: 619489efd7915904e8b2310da9d2cc55, type: 3}
   foodLayerMask:
     serializedVersion: 2
@@ -471,6 +472,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   splittedPieces: []
+  obstacleSplitted: []
   InterpolationObj: {fileID: 5509150461440897862}
 --- !u!1 &5509150460524699754
 GameObject:
@@ -1259,6 +1261,7 @@ MonoBehaviour:
   - {fileID: 5509150460477940517}
   - {fileID: 5509150460832955721}
   NetworkedBehaviours:
+  - {fileID: 5509150461707433353}
   - {fileID: 5509150461707433352}
   SimulationBehaviours: []
 --- !u!114 &5509150461707433354
@@ -1367,6 +1370,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a1f8954e218e24892af99eef60e5dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _UserName: 
+  _playernameEntryText: {fileID: 5509150460674542799}
 --- !u!114 &5509150461707433352
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,18 +10,17 @@ using UnityEngine.EventSystems;
 public class GameSetter : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab = null;
-    //[SerializeField] private PlayerData playerDataPrefab;
+    [SerializeField] private PlayerData playerDataPrefab;
 
-    //[SerializeField] private InputField userName = null;
-    //[SerializeField] private Text usernamePlaceHolder = null;
+    [SerializeField] private InputField userName = null;
+    [SerializeField] private Text usernamePlaceHolder = null;
 
     [SerializeField] private string gameSceneName = null;
 
     private NetworkRunner runnerInstance;
     public GameObject joinButton;
 
-
-
+    
     public void Start()
     {
         // call the function that tracks join button
@@ -42,9 +41,31 @@ public class GameSetter : MonoBehaviour
         //the code within the lambda expression (() => StartSharedSession()) will be executed.
         joinButton.GetComponent<Button>().onClick.AddListener((() => StartSharedSession()));
     }
+    
+    
+    public void SetPlayerData()
+    {
+        var playerData = FindObjectOfType<PlayerData>();
+        if (playerData == null)
+        {
+            playerData = Instantiate(playerDataPrefab);
+        }
+
+        if (string.IsNullOrWhiteSpace(userName.text))
+        {
+            playerData.SetUserName(usernamePlaceHolder.text);
+        }
+        else
+        {
+            playerData.SetUserName(userName.text);
+
+        }
+    }
+    
 
     public void StartSharedSession()
     {
+        SetPlayerData();
         StartGame(GameMode.Shared, gameSceneName);
     }
 

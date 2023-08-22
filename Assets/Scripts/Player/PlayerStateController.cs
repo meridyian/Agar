@@ -145,33 +145,31 @@ public class PlayerStateController : NetworkBehaviour
 
     public void ObstacleSplit()
     {
-        // belli bi boyuttan küçükse oyunu bitir 
 
-        if (playerSize < 1f)
+        if (playerSize > 2f)
         {
-            Debug.Log("your size is less than 1, GAME OVER");
-        }
+            playerSize -= playerSize * .5f;
+            int numSplitParts = 4;
         
-        playerSize -= playerSize * .5f;
-        int numSplitParts = 4;
-        
-        for (int i = 0; i < numSplitParts; i++)
-        {
-            float angle = 360f * i / numSplitParts;
-            Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * splitRadius;
-            Vector3 spawnPosition = transform.position + offset;
-            NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
-            splitPart.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
-            Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
-            if (rigid != null)
+            for (int i = 0; i < numSplitParts; i++)
             {
+                float angle = 360f * i / numSplitParts;
+                Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * splitRadius;
+                Vector3 spawnPosition = transform.position + offset;
+                NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
+                splitPart.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+                Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
+                if (rigid != null)
+                {
                 
-                Vector3 forceDirection = (splitPart.transform.position - transform.position).normalized;
-                rigid.AddForce(forceDirection * 2f, ForceMode.Impulse);
+                    Vector3 forceDirection = (splitPart.transform.position - transform.position).normalized;
+                    rigid.AddForce(forceDirection * 2f, ForceMode.Impulse);
+                }
+                splittedPieces.Add(splitPart);
             }
-            splittedPieces.Add(splitPart);
         }
-       
+        else
+            Debug.Log("your size is less than 1, GAME OVER");
 
     }
     
