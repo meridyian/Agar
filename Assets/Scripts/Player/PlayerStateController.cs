@@ -17,36 +17,57 @@ public class PlayerStateController : NetworkBehaviour
     private Rigidbody rb;
     private bool splitPressed;
 
-    private float splitThreshold = 2f;
+    private float splitThreshold = 1.3f;
 
     public GameObject splittedPiecePref;
     [SerializeField] private LayerMask foodLayerMask;
     [SerializeField] List<GameObject> foodTarget;
     [SerializeField] Collider[] hitcolliders;
     [SerializeField] List<NetworkObject> splittedPieces = new List<NetworkObject>();
+    [SerializeField] private Transform InterpolationObj;
+    private HingeJoint hingeJoint;
 
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        InterpolationObj = GetComponentInChildren<Transform>();
         //_playerControls = gameObject.GetComponentInParent<InputAction>();
-
-
+        
     }
 
     // size senin kendi objende değişiyo ama networkte göstermelisin networked
     // property olmalı
 
+    public override void Spawned()
+    {
+
+
+    }
+
 
 
     public override void FixedUpdateNetwork()
     {
-        if (splittedPieces.Count > 0)
-        {
-            var rigidb = splittedPieces[0].GetComponent<Rigidbody>();
-            Vector3 moveDir = (rb.transform.position - rigidb.transform.position).normalized;
-            rigidb.AddForce(moveDir * 0.1f, ForceMode.Impulse );
-        }
+        /*
+foreach (NetworkObject splitPart in splittedPieces)
+{
+    if (splitPart != null)
+    {
+        Vector3 forceDirection = (InterpolationObj.position - splitPart.transform.position).normalized;
+        splitPart.GetComponent<Rigidbody>().AddForce(forceDirection * 3f , ForceMode.Acceleration);
+        
+    }
+}
+
+if (splittedPieces.Counts > 0)
+{
+    var rigidb = splittedPieces[0].GetComponent<Rigidbody>();
+    Vector3 moveDir = (rb.transform.position - rigidb.transform.position).normalized;
+    rigidb.AddForce(moveDir * 0.1f, ForceMode.Impulse );
+}
+*/
+
     }
 
 
@@ -98,17 +119,46 @@ public class PlayerStateController : NetworkBehaviour
 
     public void SpaceSplit()
     {
-        splittedPieces.Add(transform.GetComponent<NetworkObject>());
-        playerSize -= playerSize * 0.3f;
-        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
-        transform.localScale = playersizeVector;
+        //splittedPieces.Add(transform.GetComponent<NetworkObject>());
+        //playerSize -= playerSize * 0.3f;
+        //Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
+        //transform.localScale = playersizeVector;
+        /*
         NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position,
             Quaternion.identity);
         splitPiece.transform.localScale = playersizeVector;
         splitPiece.GetComponent<Rigidbody>().AddForce(Vector3.forward, ForceMode.Impulse);
         splitPiece.transform.parent = transform;
         splittedPieces.Add(splitPiece);
+        */
+        
+        // calculate spawn position (forward from parent)
+        Vector3 spawnPosition = transform.position + transform.position * 1.5f;
+        // update player size and spawned piece size as needed
+        playerSize -= playerSize * 0.3f;
+        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
+
+        // spawn the split object
+        NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position,
+            Quaternion.identity);
+        splitPiece.transform.localScale = playersizeVector;
+        // set the split object as a child of the parent 
+        splitPiece.transform.parent = transform;
+        
+        
+        // Update the hinge joint's anchors
+
+        hingeJoint = splitPiece.GetComponent<Rigidbody>().AddComponent<HingeJoint>();
+        hingeJoint.anchor = rb.position + Vector3.up * 2.0f;
+        hingeJoint.connectedBody = rb;
+        
+        splittedPieces.Add(splitPiece);
+
+
     }
+
+
+    
     /*
 
     public void MovePartsTogether()
@@ -132,6 +182,7 @@ public class PlayerStateController : NetworkBehaviour
         }
     }
     */
+    
 
 
   
