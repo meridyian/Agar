@@ -16,14 +16,15 @@ public class PlayerStateController : NetworkBehaviour
 
     private Rigidbody rb;
     private bool splitPressed;
-
-    private float splitThreshold = 1.3f;
+    public float splitRadius = 2f;
+    private float splitThreshold = 2f;
 
     public GameObject splittedPiecePref;
     [SerializeField] private LayerMask foodLayerMask;
     [SerializeField] List<GameObject> foodTarget;
     [SerializeField] Collider[] hitcolliders;
     [SerializeField] List<NetworkObject> splittedPieces = new List<NetworkObject>();
+    [SerializeField] List<NetworkObject> obstacleSplitted = new List<NetworkObject>();
     [SerializeField] private Transform InterpolationObj;
 
 
@@ -38,45 +39,23 @@ public class PlayerStateController : NetworkBehaviour
 
     // size senin kendi objende değişiyo ama networkte göstermelisin networked
     // property olmalı
-
-    public override void Spawned()
-    {
-
-
-    }
-
-
+    
 
     public override void FixedUpdateNetwork()
     {
-        
-        /*
-foreach (NetworkObject splitPart in splittedPieces)
-{
-    if (splitPart != null)
-    {
-        Vector3 forceDirection = (InterpolationObj.position - splitPart.transform.position).normalized;
-        splitPart.GetComponent<Rigidbody>().AddForce(forceDirection * 3f , ForceMode.Acceleration);
-        
-    }
-}
 
-if (splittedPieces.Counts > 0)
-{
-    var rigidb = splittedPieces[0].GetComponent<Rigidbody>();
-    Vector3 moveDir = (rb.transform.position - rigidb.transform.position).normalized;
-    rigidb.AddForce(moveDir * 0.1f, ForceMode.Impulse );
-}
-*/
-        foreach (NetworkObject piece in splittedPieces)
+        //MoveSplitCellsTogether();
+        
+        if (splittedPieces.Count > 0)
         {
-            if (splittedPieces.Count > 0)
+            foreach (NetworkObject piece in splittedPieces)
             {
                 Vector3 targetDir = InterpolationObj.position  - piece.transform.position;
                 piece.GetComponent<Rigidbody>().AddForce(targetDir * 0.7f, ForceMode.Acceleration);
                 
             }
         }
+        
         
     }
 
@@ -91,14 +70,15 @@ if (splittedPieces.Counts > 0)
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
 
-        /*
+        
         // check if colliding with obstacle
         if (other.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("collided with obstacle");
             // call split function
+            ObstacleSplit();
         }
-        */
+        
     }
 
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
@@ -115,7 +95,6 @@ if (splittedPieces.Counts > 0)
             if (playerSize > splitThreshold)
             {
                 // YOU CAN SPAWN PLAYERBODY IN HERE
-
                 SpaceSplit(); 
            
             }
@@ -128,10 +107,7 @@ if (splittedPieces.Counts > 0)
 
     public void SpaceSplit()
     {
-        //splittedPieces.Add(transform.GetComponent<NetworkObject>());
-        //playerSize -= playerSize * 0.3f;
-        //Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
-        //transform.localScale = playersizeVector;
+        
         /*
         NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position,
             Quaternion.identity);
@@ -140,50 +116,76 @@ if (splittedPieces.Counts > 0)
         splitPiece.transform.parent = transform;
         splittedPieces.Add(splitPiece);
         */
+        // update player size and spawned piece size as needed
+        playerSize -= playerSize * 0.5f;
+        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
         
         // calculate spawn position (forward from parent)
         Vector3 spawnPosition = transform.position + transform.position * 2f;
-        // update player size and spawned piece size as needed
-        playerSize -= playerSize * 0.3f;
-        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
-
+        
         // spawn the split object
         NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position + transform.forward,
             Quaternion.identity);
         splitPiece.transform.localScale = playersizeVector;
         // set the split object as a child of the parent 
         splittedPieces.Add(splitPiece);
-
-
+        
     }
 
 
-    
-    /*
-
-    public void MovePartsTogether()
+    public void ObstacleSplit()
     {
-        if (splittedPieces.Count >=1)
+        // belli bi boyuttan küçükse oyunu bitir 
+
+        if (playerSize < 1f)
         {
-            Vector3 centerpos = Vector3.zero;
-            foreach (NetworkObject splittedBall in splittedPieces)
+            Debug.Log("your size is less than 1, GAME OVER");
+        }
+        
+        playerSize -= playerSize * .5f;
+        int numSplitParts = 4;
+        
+        for (int i = 0; i < numSplitParts; i++)
+        {
+            float angle = 360f * i / numSplitParts;
+            Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * splitRadius;
+            Vector3 spawnPosition = transform.position + offset;
+            NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
+            splitPart.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+            Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
+            if (rigid != null)
             {
-                centerpos += splittedBall.transform.position;
+                
+                Vector3 forceDirection = (splitPart.transform.position - transform.position).normalized;
+                rigid.AddForce(forceDirection * 2f, ForceMode.Impulse);
+            }
+            splittedPieces.Add(splitPart);
+        }
+       
+
+    }
+    /*
+    private void MoveSplitCellsTogether()
+    {
+        if (splittedPieces.Count > 0)
+        {
+            Vector3 centerPosition = transform.position;
+
+            foreach (NetworkObject piece in splittedPieces)
+            {
+                centerPosition += piece.transform.position;
             }
 
-            centerpos /= splittedPieces.Count;
+            centerPosition /= splittedPieces.Count;
 
-            foreach (NetworkObject ball in splittedPieces)
+            foreach (NetworkObject cell in splittedPieces)
             {
-                Rigidbody rb = ball.GetComponent<Rigidbody>();
-                Vector3 moveDir = (centerpos - rb.transform.position).normalized;
-                rb.AddForce(moveDir * 2f  ,ForceMode.Impulse);
+                Rigidbody rb = cell.GetComponent<Rigidbody>();
+                Vector3 moveDirection = (centerPosition - cell.transform.position).normalized;
+                rb.AddForce(moveDirection  * 0.5f, ForceMode.Impulse);
             }
         }
     }
     */
-    
-
-
   
 }
