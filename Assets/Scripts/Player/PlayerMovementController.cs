@@ -61,8 +61,6 @@ public class PlayerMovementController : NetworkBehaviour
         
         if (Object.HasStateAuthority)
         {
-           
-           
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;

@@ -25,15 +25,15 @@ public class PlayerStateController : NetworkBehaviour
     [SerializeField] Collider[] hitcolliders;
     [SerializeField] List<NetworkObject> splittedPieces = new List<NetworkObject>();
     [SerializeField] private Transform InterpolationObj;
-    private HingeJoint hingeJoint;
 
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
         InterpolationObj = GetComponentInChildren<Transform>();
+
         //_playerControls = gameObject.GetComponentInParent<InputAction>();
-        
+
     }
 
     // size senin kendi objende değişiyo ama networkte göstermelisin networked
@@ -49,6 +49,7 @@ public class PlayerStateController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        
         /*
 foreach (NetworkObject splitPart in splittedPieces)
 {
@@ -67,7 +68,16 @@ if (splittedPieces.Counts > 0)
     rigidb.AddForce(moveDir * 0.1f, ForceMode.Impulse );
 }
 */
-
+        foreach (NetworkObject piece in splittedPieces)
+        {
+            if (splittedPieces.Count > 0)
+            {
+                Vector3 targetDir = InterpolationObj.position  - piece.transform.position;
+                piece.GetComponent<Rigidbody>().AddForce(targetDir * 0.7f, ForceMode.Acceleration);
+                
+            }
+        }
+        
     }
 
 
@@ -102,7 +112,6 @@ if (splittedPieces.Counts > 0)
     {
         if (context.performed)
         {
-            
             if (playerSize > splitThreshold)
             {
                 // YOU CAN SPAWN PLAYERBODY IN HERE
@@ -133,25 +142,16 @@ if (splittedPieces.Counts > 0)
         */
         
         // calculate spawn position (forward from parent)
-        Vector3 spawnPosition = transform.position + transform.position * 1.5f;
+        Vector3 spawnPosition = transform.position + transform.position * 2f;
         // update player size and spawned piece size as needed
         playerSize -= playerSize * 0.3f;
         Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
 
         // spawn the split object
-        NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position,
+        NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position + transform.forward,
             Quaternion.identity);
         splitPiece.transform.localScale = playersizeVector;
         // set the split object as a child of the parent 
-        splitPiece.transform.parent = transform;
-        
-        
-        // Update the hinge joint's anchors
-
-        hingeJoint = splitPiece.GetComponent<Rigidbody>().AddComponent<HingeJoint>();
-        hingeJoint.anchor = rb.position + Vector3.up * 2.0f;
-        hingeJoint.connectedBody = rb;
-        
         splittedPieces.Add(splitPiece);
 
 
