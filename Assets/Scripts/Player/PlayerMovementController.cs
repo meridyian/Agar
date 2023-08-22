@@ -12,7 +12,7 @@ public class PlayerMovementController : NetworkBehaviour
     private PlayerStateController _playerStateController;
     
     // camera settings
-    public CinemachineFreeLook localCamera;
+    public CinemachineVirtualCamera localCamera;
     private Transform cameraMainTransform;
     
     // other components
@@ -31,7 +31,7 @@ public class PlayerMovementController : NetworkBehaviour
      void Awake()
     {
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
-        localCamera = transform.GetChild(1).GetComponent<CinemachineFreeLook>();
+        localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
         controls = new PlayerControls();
        
 

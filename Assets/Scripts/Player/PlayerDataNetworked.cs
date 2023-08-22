@@ -9,6 +9,9 @@ public class PlayerDataNetworked : NetworkBehaviour
     [Networked(OnChanged = nameof(UsernameChanged))]
     public string UserName { get;  set; }
     
+
+    
+    
     public Text _playernameEntryText;
     public static PlayerDataNetworked NetworkedDataInstance;
 
@@ -23,7 +26,9 @@ public class PlayerDataNetworked : NetworkBehaviour
 
     public override void Spawned()
     {
+        // şuan boş geliyo 
         _playernameEntryText.text = UserName;
+
         Debug.Log(UserName + "joined outside haststate authority");
         if (Object.HasStateAuthority)
         {

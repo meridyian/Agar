@@ -14,6 +14,10 @@ public class PlayerStateController : NetworkBehaviour
     [Networked(OnChanged = nameof(NetworkSizeChanged))]
     public float playerSize { get; set; }
 
+        
+    [Networked(OnChanged = nameof(PlayerScoreChanged))]
+    public float playerScore { get; set; }
+    
     private Rigidbody rb;
     private bool splitPressed;
     public float splitRadius = 2f;
@@ -39,11 +43,16 @@ public class PlayerStateController : NetworkBehaviour
 
     // size senin kendi objende değişiyo ama networkte göstermelisin networked
     // property olmalı
+
+    public override void Spawned()
+    {
+        playerScore = 0;
+    }
     
 
     public override void FixedUpdateNetwork()
     {
-
+        playerScore =playerSize * 20;
         //MoveSplitCellsTogether();
         
         if (splittedPieces.Count > 0)
@@ -55,6 +64,10 @@ public class PlayerStateController : NetworkBehaviour
                 
             }
         }
+        Debug.Log("playerSize" + playerSize);
+        Debug.Log("playerScore" + playerScore);
+
+       
         
         
     }
@@ -94,6 +107,11 @@ public class PlayerStateController : NetworkBehaviour
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
         changed.Behaviour.playerSize = changed.Behaviour.playerSize;
+        
+    }
+    private static void PlayerScoreChanged(Changed<PlayerStateController> changed)
+    {
+        changed.Behaviour.playerScore = changed.Behaviour.playerScore;
 
     }
 
@@ -145,10 +163,10 @@ public class PlayerStateController : NetworkBehaviour
 
     public void ObstacleSplit()
     {
-
+        playerSize -= playerSize * .5f;
         if (playerSize > 2f)
         {
-            playerSize -= playerSize * .5f;
+            
             int numSplitParts = 4;
         
             for (int i = 0; i < numSplitParts; i++)
