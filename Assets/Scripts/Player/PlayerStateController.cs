@@ -160,6 +160,7 @@ public class PlayerStateController : NetworkBehaviour
             Quaternion.identity);
         splitPiece.GetComponent<MeshRenderer>().material.color = NetworkedColor;
         splitPiece.transform.localScale = playersizeVector;
+        splitPiece.transform.parent = transform;
         // set the split object as a child of the parent 
         splittedPieces.Add(splitPiece);
         
@@ -179,6 +180,8 @@ public class PlayerStateController : NetworkBehaviour
             NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
             splitPart.GetComponent<MeshRenderer>().material.color = NetworkedColor;
             splitPart.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+            splitPart.transform.parent = transform;
+
             Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
             if (rigid != null)
             {

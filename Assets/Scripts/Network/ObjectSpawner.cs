@@ -30,7 +30,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
 
     public void SpawnFood()
     {
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 300; i++)
         {
             // belki bi gameobje altınd atoplarsın sonra
             NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition(foodPrefab.transform.localScale.x) , Quaternion.identity);
@@ -42,7 +42,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     
     public void SpawnObstacle()
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 150; i++)
         {
             // belki bi gameobje altınd atoplarsın sonra
             NetworkObject spawnedFood = Runner.Spawn(obstaclePrefab, Utils.GetRandomSpawnPosition(obstaclePrefab.transform.localScale.x) , Quaternion.identity);

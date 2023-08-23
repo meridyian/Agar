@@ -12,6 +12,7 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
         if (other.transform.CompareTag("Obstacle"))
         {
             Destroy(gameObject);
+            transform.parent.GetComponent<PlayerStateController>().splittedPieces.Remove(this.GetComponent<NetworkObject>());
         }
     }
     

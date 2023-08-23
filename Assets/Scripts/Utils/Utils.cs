@@ -6,7 +6,7 @@ public static class Utils
 {
     public static Vector3 GetRandomSpawnPosition(float radius)
     {
-        return new Vector3(Random.Range(0, 30), radius/2f, Random.Range(0, 30) * 0.7f);
+        return new Vector3(Random.Range(-50, 50), radius/2f, Random.Range(-50,50) );
     }
 
 
