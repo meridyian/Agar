@@ -16,13 +16,12 @@ public class PlayerStateController : NetworkBehaviour
     [Networked(OnChanged = nameof(NetworkSizeChanged))]
     public float NetworkedSize { get; set; } = 1.0f;
     
-    [Networked(OnChanged = nameof(PlayerScoreChanged))]
-    public float playerScore { get; set; }
+    //[Networked(OnChanged = nameof(PlayerScoreChanged))]
+    public float playerScore;
     
     [Networked(OnChanged = nameof(NetworkColorChanged))]
     public Color NetworkedColor { get; set; }
-
-    public Vector3 sizeVector;
+    
     
     private Rigidbody rb;
     private bool splitPressed;
@@ -65,7 +64,7 @@ public class PlayerStateController : NetworkBehaviour
             }
         }
         Debug.Log("playerSize" + NetworkedSize);
-        Debug.Log("playerScore" + playerScore);
+
 
     }
 
@@ -78,7 +77,6 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with food");
             NetworkedSize += NetworkedSize * 0.2f;
-            //rb.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
         
@@ -99,14 +97,13 @@ public class PlayerStateController : NetworkBehaviour
         else if (NetworkedSize > other.transform.localScale.x)
         {
             Debug.Log("collided with playerpiece or bot ");
-            //other.transform.GetComponent<Rigidbody>().AddForce(transform.position);
-            //other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.05f);
+  
             
             // check if it was a splitted piece
             
             if (other.transform.CompareTag("Player"))
             {
-                NetworkedSize += other.transform.localScale.magnitude * 0.4f;
+                NetworkedSize +=  0.3f;
                 splittedPieces.Remove(other.transform.GetComponent<NetworkObject>()); 
                 Destroy(other.gameObject);
                 
@@ -127,14 +124,14 @@ public class PlayerStateController : NetworkBehaviour
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
         Vector3 newScale = Vector3.one * changed.Behaviour.NetworkedSize;
-        changed.Behaviour.transform.localScale = newScale;
+        changed.Behaviour.rb.transform.localScale = newScale;
         
-    }
-    private static void PlayerScoreChanged(Changed<PlayerStateController> changed)
-    {
-        changed.Behaviour.playerScore = changed.Behaviour.playerScore;
+        float playerScore = changed.Behaviour.NetworkedSize * 20f;
+        changed.Behaviour.playerScore = playerScore;
+        Debug.Log("changed score" + changed.Behaviour.playerScore);
 
     }
+
     private static void NetworkColorChanged(Changed<PlayerStateController> changed)
     {
         changed.Behaviour.MeshRenderer.material.color = changed.Behaviour.NetworkedColor;
@@ -161,23 +158,23 @@ public class PlayerStateController : NetworkBehaviour
     // for splace split since it is intentional add the scores collected by the piece
     public void SpaceSplit()
     {
-        
         // update player size and spawned piece size as needed
-        NetworkedSize -= NetworkedSize * 0.7f;
+        NetworkedSize -= NetworkedSize * 0.5f;
         Vector3 playersizeVector = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
         
         // calculate spawn position (forward from parent)
-        float angle = 360f;
-        Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * splitRadius;
-        Vector3 spawnPosition = transform.position + offset;
-        
-        
         // spawn the split object
-        NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, spawnPosition,
+        NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, transform.position + Vector3.one,
             Quaternion.identity);
         splitPiece.GetComponent<MeshRenderer>().material.color = NetworkedColor;
         splitPiece.transform.localScale = playersizeVector;
         splitPiece.transform.parent = transform;
+        Rigidbody rigid = splitPiece.GetComponent<Rigidbody>();
+        if (rigid != null)
+        {
+            Vector3 forceDirection = (splitPiece.transform.position - transform.position).normalized;
+            rigid.AddForce(forceDirection , ForceMode.Impulse);
+        }
         // set the split object as a child of the parent 
         splittedPieces.Add(splitPiece);
         
@@ -198,7 +195,7 @@ public class PlayerStateController : NetworkBehaviour
             Vector3 spawnPosition = transform.position + offset;
             NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
             splitPart.GetComponent<MeshRenderer>().material.color = NetworkedColor;
-            splitPart.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
+            //splitPart.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             splitPart.transform.parent = transform;
 
             Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
