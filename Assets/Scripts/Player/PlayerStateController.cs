@@ -78,7 +78,7 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with food");
             NetworkedSize += NetworkedSize * 0.2f;
-            rb.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
+            //rb.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
         
@@ -167,7 +167,10 @@ public class PlayerStateController : NetworkBehaviour
         Vector3 playersizeVector = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
         
         // calculate spawn position (forward from parent)
-        Vector3 spawnPosition = transform.position + transform.position * 2f;
+        float angle = 360f;
+        Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * splitRadius;
+        Vector3 spawnPosition = transform.position + offset;
+        
         
         // spawn the split object
         NetworkObject splitPiece = Runner.Spawn(splittedPiecePref, spawnPosition,

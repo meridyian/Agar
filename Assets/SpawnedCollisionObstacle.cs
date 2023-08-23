@@ -32,6 +32,9 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
         {
             Debug.Log("Splitted piece collided with food");
             transform.parent.GetComponent<PlayerStateController>().NetworkedSize += other.transform.localScale.magnitude * 0.3f;
+            Destroy(gameObject);
+            transform.parent.GetComponent<PlayerStateController>().splittedPieces.Remove(this.GetComponent<NetworkObject>());
+            
         }
         /*
         
