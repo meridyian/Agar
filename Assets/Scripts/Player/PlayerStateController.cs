@@ -9,30 +9,35 @@ using Random = UnityEngine.Random;
 
 public class PlayerStateController : NetworkBehaviour
 {
-    public bool isBot;
-    public MeshRenderer MeshRenderer;
-
-    // networked properties
-    [Networked(OnChanged = nameof(NetworkSizeChanged))]
-    public float NetworkedSize { get; set; } = 1.0f;
+    //public bool isBot;
     
-    //[Networked(OnChanged = nameof(PlayerScoreChanged))]
-    public float playerScore;
+    // color change related networked properties
+    public MeshRenderer MeshRenderer;
     
     [Networked(OnChanged = nameof(NetworkColorChanged))]
     public Color NetworkedColor { get; set; }
+
     
+    // size and score change related networked properties
+    [Networked(OnChanged = nameof(NetworkSizeChanged))]
+    public float NetworkedSize { get; set; } = 1.0f;
     
-    private Rigidbody rb;
+    public float playerScore;
+    
+    // split controls
     private bool splitPressed;
     public float splitRadius = 2f;
     private float splitThreshold = 2f;
-
+    public List<NetworkObject> splittedPieces = new List<NetworkObject>();
     public GameObject splittedPiecePref;
+    
+    // food collection related 
     [SerializeField] private LayerMask foodLayerMask;
     [SerializeField] List<GameObject> foodTarget;
     [SerializeField] Collider[] hitcolliders;
-    public List<NetworkObject> splittedPieces = new List<NetworkObject>();
+    
+    // main
+    private Rigidbody rb;
     [SerializeField] private Transform InterpolationObj;
 
 
@@ -46,13 +51,14 @@ public class PlayerStateController : NetworkBehaviour
     public override void Spawned()
     {
         playerScore = 0;
+        // set random color
         NetworkedColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1f);
     }
     
 
     public override void FixedUpdateNetwork()
     {
-        //playerScore = playerSize * 20;
+        // to make sure that spawned parts will follow the main player
         
         if (splittedPieces.Count > 0)
         {
@@ -63,16 +69,16 @@ public class PlayerStateController : NetworkBehaviour
                 
             }
         }
-        Debug.Log("playerSize" + NetworkedSize);
 
-
+        
     }
 
     
     // COLLISION STATES
     public void OnCollisionEnter(Collision other)
     {
-        // when collided with food change its size and update score
+        // when collided with food change its size and update score and position of the food
+        
         if (other.gameObject.CompareTag("Food"))
         {
             Debug.Log("collided with food");
@@ -103,13 +109,16 @@ public class PlayerStateController : NetworkBehaviour
             
             if (other.transform.CompareTag("Player"))
             {
-                NetworkedSize +=  0.3f;
+                NetworkedSize +=  NetworkedSize * 0.3f;
                 splittedPieces.Remove(other.transform.GetComponent<NetworkObject>()); 
                 Destroy(other.gameObject);
                 
             }
             
-            // bıtsa başka yerde spawn edebilirsin
+            // to do :  botsa ve benden büyükse game over, botsa ve benden küçükse ben yedim
+            // ben botsam ama input auhtorityliyi yersem onun oyunu bitti o beni yerse devam
+            
+            // botsa başka yerde spawn edebilirsin
             //other.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
             //playerSize += other.transform.localScale.magnitude * 0.5f;
 
@@ -121,17 +130,21 @@ public class PlayerStateController : NetworkBehaviour
     
     
     // Change functions for Networked Properties
+    
+    // since score will be related with size, they can be managed with one Change action
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
         Vector3 newScale = Vector3.one * changed.Behaviour.NetworkedSize;
         changed.Behaviour.rb.transform.localScale = newScale;
+        Debug.Log("playerSize" + changed.Behaviour.rb.transform.localScale);
         
         float playerScore = changed.Behaviour.NetworkedSize * 20f;
         changed.Behaviour.playerScore = playerScore;
         Debug.Log("changed score" + changed.Behaviour.playerScore);
 
     }
-
+    
+    // color change when spawned, splietted pieces should be spawned with the same color
     private static void NetworkColorChanged(Changed<PlayerStateController> changed)
     {
         changed.Behaviour.MeshRenderer.material.color = changed.Behaviour.NetworkedColor;
@@ -154,8 +167,8 @@ public class PlayerStateController : NetworkBehaviour
     }
     
     
-    // space split is only possible if the playerSize is bigger than threshold set
-    // for splace split since it is intentional add the scores collected by the piece
+    // space split is only possible if the playerSize is bigger than threshold 
+    // for space split since it is intentional add the scores collected by the piece
     public void SpaceSplit()
     {
         // update player size and spawned piece size as needed
@@ -170,6 +183,9 @@ public class PlayerStateController : NetworkBehaviour
         splitPiece.transform.localScale = playersizeVector;
         splitPiece.transform.parent = transform;
         Rigidbody rigid = splitPiece.GetComponent<Rigidbody>();
+        
+        // move pieces a bit to prevent collision at start
+        
         if (rigid != null)
         {
             Vector3 forceDirection = (splitPiece.transform.position - transform.position).normalized;

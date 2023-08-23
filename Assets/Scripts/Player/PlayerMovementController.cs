@@ -8,6 +8,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovementController : NetworkBehaviour
 {
+    
+    // This class controls only movement related processes
+    
     public static PlayerMovementController Local { get; set; }
     private PlayerStateController _playerStateController;
     
@@ -17,8 +20,6 @@ public class PlayerMovementController : NetworkBehaviour
     
     // other components
     private Rigidbody rb;
-    public bool splitPressed;
-
     
     //movement
     private PlayerControls controls;
@@ -39,7 +40,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     public override void Spawned()
     {
-        // input authority is checked to see who is your local player to assign this script
+        // state authority is checked to see who is your local player to assign this script
         // to make maincamera able to render the camera of local player make it free from its parent when it is the local 
         // disable otherwise
         if (Object.HasStateAuthority)

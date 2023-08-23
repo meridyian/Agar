@@ -32,9 +32,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     {
         for (int i = 0; i < 300; i++)
         {
-            // belki bi gameobje altınd atoplarsın sonra
             NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition(foodPrefab.transform.localScale.x) , Quaternion.identity);
-
         }
 
         isFoodSpawned = true;
@@ -44,16 +42,14 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     {
         for (int i = 0; i < 150; i++)
         {
-            // belki bi gameobje altınd atoplarsın sonra
-            NetworkObject spawnedFood = Runner.Spawn(obstaclePrefab, Utils.GetRandomSpawnPosition(obstaclePrefab.transform.localScale.x) , Quaternion.identity);
 
+            NetworkObject spawnedFood = Runner.Spawn(obstaclePrefab, Utils.GetRandomSpawnPosition(obstaclePrefab.transform.localScale.x) , Quaternion.identity);
         }
 
         isObstacleSpawned = true;
     }
     
     // check the current number of players you have, if it is not enough spawn bots
-
     public void SpawnBots()
     {
         int numberOfBotsToSpawn = desiredNumberofPlayers - Runner.SessionInfo.PlayerCount - botsList.Count;
@@ -65,10 +61,9 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
 
     
 
-
     public void InitializeBeforeBotSpawn(NetworkRunner runner, NetworkObject networkObject)
     {
-        networkObject.GetComponent<PlayerStateController>().isBot = true;
+        //networkObject.GetComponent<PlayerStateController>().isBot = true;
     }
     
     public void Spawned()

@@ -9,9 +9,9 @@ public static class Utils
         return new Vector3(Random.Range(-50, 50), radius/2f, Random.Range(-50,50) );
     }
 
-
-
-    public static string GetRandomName()
+    
+    // to create bots with names
+    public static string GetRandomBotName()
     {
         string[] names = { "Eddy", "Freddy", "Paddy", "Buddy", "Herkel" };
 

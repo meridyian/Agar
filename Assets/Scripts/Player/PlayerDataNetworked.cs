@@ -29,26 +29,22 @@ public class PlayerDataNetworked : NetworkBehaviour
 
     public override void Spawned()
     {
-        // şuan boş geliyo 
-        //_playernameEntryText.text = UserName;
-
+        // return each joined player's name
+        
         if (Object.HasStateAuthority)
         {
             var userName = FindObjectOfType<PlayerData>().GetUserName();
             DealNameRpc(userName);
             _playernameEntryText.text = UserName;
-            Debug.Log(UserName + "joined  haststate authority");
+            Debug.Log(UserName + "joined from state authority");
         }
 
     }
     private static void UsernameChanged(Changed<PlayerDataNetworked> changed)
     {
         changed.Behaviour._playernameEntryText.text = changed.Behaviour.UserName;
-        /*
-        changed.Behaviour.UserName = changed.Behaviour._playernameEntryText.text;
-        Debug.Log(changed.Behaviour.UserName + "joined from networked data");
-        */
     }
+    
     
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void DealNameRpc(string name)
