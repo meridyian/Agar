@@ -23,7 +23,7 @@ public class PlayerMovementController : NetworkBehaviour
     //movement
     private PlayerControls controls;
     private Vector2 moveInput;
-    private Vector3 m_movement;
+    public Vector3 m_movement;
     private float playerSpeed = 3f;
 
     // for collision detection
