@@ -14,14 +14,15 @@ public class PlayerStateController : NetworkBehaviour
 
     // networked properties
     [Networked(OnChanged = nameof(NetworkSizeChanged))]
-    public float playerSize { get; set; }
+    public float NetworkedSize { get; set; } = 1.0f;
     
     [Networked(OnChanged = nameof(PlayerScoreChanged))]
     public float playerScore { get; set; }
     
     [Networked(OnChanged = nameof(NetworkColorChanged))]
     public Color NetworkedColor { get; set; }
-    
+
+    public Vector3 sizeVector;
     
     private Rigidbody rb;
     private bool splitPressed;
@@ -41,32 +42,29 @@ public class PlayerStateController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         InterpolationObj = GetComponentInChildren<Transform>();
         MeshRenderer = GetComponent<MeshRenderer>();
-
     }
 
     public override void Spawned()
     {
         playerScore = 0;
-        
-        // Set a color to player when spawned
         NetworkedColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1f);
     }
     
 
     public override void FixedUpdateNetwork()
     {
-        playerScore = playerSize * 20;
+        //playerScore = playerSize * 20;
         
         if (splittedPieces.Count > 0)
         {
             foreach (NetworkObject piece in splittedPieces)
             {
                 Vector3 targetDir = InterpolationObj.position  - piece.transform.position;
-                piece.GetComponent<Rigidbody>().AddForce(targetDir * 2f);
-
+                piece.GetComponent<Rigidbody>().AddForce(targetDir * 0.4f);
+                
             }
         }
-        Debug.Log("playerSize" + playerSize);
+        Debug.Log("playerSize" + NetworkedSize);
         Debug.Log("playerScore" + playerScore);
 
     }
@@ -79,8 +77,8 @@ public class PlayerStateController : NetworkBehaviour
         if (other.gameObject.CompareTag("Food"))
         {
             Debug.Log("collided with food");
-            playerSize += playerSize * 0.2f;
-            rb.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+            NetworkedSize += NetworkedSize * 0.2f;
+            rb.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
         
@@ -89,7 +87,7 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with obstacle");
             // call split function
-            if (playerSize > 1f)
+            if (NetworkedSize > 1.5f)
             {
                 ObstacleSplit();
             }
@@ -98,24 +96,25 @@ public class PlayerStateController : NetworkBehaviour
         }
 
         // other collision checks for  player pieces, other players and bot players
-        else if (playerSize > other.transform.localScale.x)
+        else if (NetworkedSize > other.transform.localScale.x)
         {
             Debug.Log("collided with playerpiece or bot ");
             //other.transform.GetComponent<Rigidbody>().AddForce(transform.position);
-            other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.05f);
+            //other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.05f);
             
             // check if it was a splitted piece
-            if (splittedPieces.Contains(other.transform.GetComponent<NetworkObject>()))
+            
+            if (other.transform.CompareTag("Player"))
             {
-                playerSize += other.transform.localScale.magnitude * 0.5f;
-                Destroy(gameObject);
-                splittedPieces.Remove(other.transform.GetComponent<NetworkObject>());
+                NetworkedSize += other.transform.localScale.magnitude * 0.4f;
+                splittedPieces.Remove(other.transform.GetComponent<NetworkObject>()); 
+                Destroy(other.gameObject);
                 
             }
             
             // bıtsa başka yerde spawn edebilirsin
-            other.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
-            playerSize += other.transform.localScale.magnitude * 0.5f;
+            //other.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
+            //playerSize += other.transform.localScale.magnitude * 0.5f;
 
         }
 
@@ -127,7 +126,8 @@ public class PlayerStateController : NetworkBehaviour
     // Change functions for Networked Properties
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
-        changed.Behaviour.playerSize = changed.Behaviour.playerSize;
+        Vector3 newScale = Vector3.one * changed.Behaviour.NetworkedSize;
+        changed.Behaviour.transform.localScale = newScale;
         
     }
     private static void PlayerScoreChanged(Changed<PlayerStateController> changed)
@@ -146,7 +146,7 @@ public class PlayerStateController : NetworkBehaviour
     {
         if (context.performed)
         {
-            if (playerSize > splitThreshold)
+            if (NetworkedSize > splitThreshold)
             {
                 // YOU CAN SPAWN PLAYERBODY IN HERE
                 SpaceSplit(); 
@@ -163,8 +163,8 @@ public class PlayerStateController : NetworkBehaviour
     {
         
         // update player size and spawned piece size as needed
-        playerSize -= playerSize * 0.5f;
-        Vector3 playersizeVector = new Vector3(playerSize, playerSize, playerSize);
+        NetworkedSize -= NetworkedSize * 0.7f;
+        Vector3 playersizeVector = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
         
         // calculate spawn position (forward from parent)
         Vector3 spawnPosition = transform.position + transform.position * 2f;
@@ -185,7 +185,7 @@ public class PlayerStateController : NetworkBehaviour
     // make them your child so that you can destroy when collided with obstacle
     public void ObstacleSplit()
     {
-        playerSize -= playerSize * .5f;
+        NetworkedSize = 1f;
         int numSplitParts = 4;
         
         for (int i = 0; i < numSplitParts; i++)
@@ -195,7 +195,7 @@ public class PlayerStateController : NetworkBehaviour
             Vector3 spawnPosition = transform.position + offset;
             NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity);
             splitPart.GetComponent<MeshRenderer>().material.color = NetworkedColor;
-            splitPart.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
+            splitPart.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             splitPart.transform.parent = transform;
 
             Rigidbody rigid = splitPart.GetComponent<Rigidbody>();
