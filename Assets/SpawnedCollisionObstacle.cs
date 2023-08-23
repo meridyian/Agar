@@ -7,6 +7,8 @@ using UnityEngine;
 public class SpawnedCollisionObstacle : NetworkBehaviour
 {
     
+    // this script is attached to spawned o
+    
     public void OnCollisionEnter(Collision other)
     {
         if (other.transform.CompareTag("Obstacle"))
@@ -15,5 +17,6 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
             transform.parent.GetComponent<PlayerStateController>().splittedPieces.Remove(this.GetComponent<NetworkObject>());
         }
     }
+    
     
 }

@@ -44,12 +44,10 @@ public class PlayerStateController : NetworkBehaviour
 
     }
 
-    // size senin kendi objende değişiyo ama networkte göstermelisin networked
-    // property olmalı
-
     public override void Spawned()
     {
         playerScore = 0;
+        
         // Set a color to player when spawned
         NetworkedColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1f);
     }
@@ -64,8 +62,8 @@ public class PlayerStateController : NetworkBehaviour
             foreach (NetworkObject piece in splittedPieces)
             {
                 Vector3 targetDir = InterpolationObj.position  - piece.transform.position;
-                piece.GetComponent<Rigidbody>().AddForce(targetDir* 2f);
-                
+                piece.GetComponent<Rigidbody>().AddForce(targetDir * 2f);
+
             }
         }
         Debug.Log("playerSize" + playerSize);
@@ -73,9 +71,11 @@ public class PlayerStateController : NetworkBehaviour
 
     }
 
-
+    
+    // COLLISION STATES
     public void OnCollisionEnter(Collision other)
     {
+        // when collided with food change its size and update score
         if (other.gameObject.CompareTag("Food"))
         {
             Debug.Log("collided with food");
@@ -83,7 +83,6 @@ public class PlayerStateController : NetworkBehaviour
             rb.transform.localScale = new Vector3(playerSize, playerSize, playerSize);
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
-
         
         // check if colliding with obstacle
         else if (other.gameObject.CompareTag("Obstacle"))
@@ -93,24 +92,39 @@ public class PlayerStateController : NetworkBehaviour
             if (playerSize > 1f)
             {
                 ObstacleSplit();
-
             }
             else
                 Debug.Log("your size is less than 1, GAME OVER");
         }
 
-        else if (playerSize > other.transform.localScale.magnitude)
+        // other collision checks for  player pieces, other players and bot players
+        else if (playerSize > other.transform.localScale.x)
         {
-            Debug.Log("collided with player");
-            other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.2f);
-            other.gameObject.SetActive(false);
-            playerSize += other.transform.localScale.magnitude * 0.2f;
+            Debug.Log("collided with playerpiece or bot ");
+            //other.transform.GetComponent<Rigidbody>().AddForce(transform.position);
+            other.transform.position = Vector3.MoveTowards(other.transform.position, transform.position, 0.05f);
+            
+            // check if it was a splitted piece
+            if (splittedPieces.Contains(other.transform.GetComponent<NetworkObject>()))
+            {
+                playerSize += other.transform.localScale.magnitude * 0.5f;
+                Destroy(gameObject);
+                splittedPieces.Remove(other.transform.GetComponent<NetworkObject>());
+                
+            }
+            
+            // bıtsa başka yerde spawn edebilirsin
+            other.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
+            playerSize += other.transform.localScale.magnitude * 0.5f;
 
         }
 
-        // transformunun küçük olması kaldı zaten o da game over
+        // Game over if its size is smaller 
     }
 
+    
+    
+    // Change functions for Networked Properties
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
         changed.Behaviour.playerSize = changed.Behaviour.playerSize;
@@ -121,13 +135,13 @@ public class PlayerStateController : NetworkBehaviour
         changed.Behaviour.playerScore = changed.Behaviour.playerScore;
 
     }
-
     private static void NetworkColorChanged(Changed<PlayerStateController> changed)
     {
         changed.Behaviour.MeshRenderer.material.color = changed.Behaviour.NetworkedColor;
     }
 
 
+    // split function to be called by new input system
     public void OnSplit(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -138,13 +152,13 @@ public class PlayerStateController : NetworkBehaviour
                 SpaceSplit(); 
            
             }
-
             Debug.Log("you are not big enough");
-
         }
-
     }
-
+    
+    
+    // space split is only possible if the playerSize is bigger than threshold set
+    // for splace split since it is intentional add the scores collected by the piece
     public void SpaceSplit()
     {
         
@@ -167,6 +181,8 @@ public class PlayerStateController : NetworkBehaviour
     }
 
 
+    // for obstacle split case, split into 4 pieces add them to your list 
+    // make them your child so that you can destroy when collided with obstacle
     public void ObstacleSplit()
     {
         playerSize -= playerSize * .5f;
@@ -186,7 +202,7 @@ public class PlayerStateController : NetworkBehaviour
             if (rigid != null)
             {
                 Vector3 forceDirection = (splitPart.transform.position - transform.position).normalized;
-                rigid.AddForce(forceDirection * 2f, ForceMode.Impulse);
+                rigid.AddForce(forceDirection , ForceMode.Impulse);
             }
             splittedPieces.Add(splitPart);
         }
