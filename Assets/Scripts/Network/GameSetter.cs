@@ -6,18 +6,20 @@ using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-
 public class GameSetter : MonoBehaviour
 {
+    
+    // Class for connecting Network
+    
+    // Network objects
     [SerializeField] private NetworkRunner networkRunnerPrefab = null;
+    private NetworkRunner runnerInstance;
+    
+    // Data related attributes
     [SerializeField] private PlayerData playerDataPrefab;
-
     [SerializeField] private InputField userName = null;
     [SerializeField] private Text usernamePlaceHolder = null;
-
     [SerializeField] private string gameSceneName = null;
-
-    private NetworkRunner runnerInstance;
     public GameObject joinButton;
 
     
@@ -45,6 +47,8 @@ public class GameSetter : MonoBehaviour
     
     public void SetPlayerData()
     {
+        // saves the userName data provided by user to playerData object
+        
         var playerData = FindObjectOfType<PlayerData>();
         if (playerData == null)
         {
@@ -84,7 +88,9 @@ public class GameSetter : MonoBehaviour
         {
             GameMode = mode
         };
-        //The await keyword suggests that this method call might involve asynchronous operations
+        
+        //The await keyword suggests that this method call might involve asynchronous operations those waiting
+        //for another functions to be executed, for safety reasons (waiting the fusion to be connected)
         await runnerInstance.StartGame(startGameArgs);
         runnerInstance.SetActiveScene(sceneName);
     }

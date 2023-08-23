@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class PlayerDataNetworked : NetworkBehaviour
 {
+    // Network data class which takes the PlayerData input provided in Entry scene and registers user 
+    // with the username provided
+    
     [Networked(OnChanged = nameof(UsernameChanged))]
     public string UserName { get;  set; }
     
@@ -27,9 +30,8 @@ public class PlayerDataNetworked : NetworkBehaviour
     public override void Spawned()
     {
         // şuan boş geliyo 
-        _playernameEntryText.text = UserName;
+        //_playernameEntryText.text = UserName;
 
-        Debug.Log(UserName + "joined outside haststate authority");
         if (Object.HasStateAuthority)
         {
             var userName = FindObjectOfType<PlayerData>().GetUserName();
@@ -41,8 +43,11 @@ public class PlayerDataNetworked : NetworkBehaviour
     }
     private static void UsernameChanged(Changed<PlayerDataNetworked> changed)
     {
+        changed.Behaviour._playernameEntryText.text = changed.Behaviour.UserName;
+        /*
         changed.Behaviour.UserName = changed.Behaviour._playernameEntryText.text;
         Debug.Log(changed.Behaviour.UserName + "joined from networked data");
+        */
     }
     
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

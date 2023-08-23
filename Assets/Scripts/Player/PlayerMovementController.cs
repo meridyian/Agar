@@ -58,14 +58,11 @@ public class PlayerMovementController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        
         if (Object.HasStateAuthority)
         {
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
-            //m_movement = cameraMainTransform.forward * m_movement.z + cameraMainTransform.right * m_movement.x;
-            //m_movement.y = 0f;
             rb.AddForce(m_movement * playerSpeed);
             
         }

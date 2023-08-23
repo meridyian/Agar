@@ -34,7 +34,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         {
             // belki bi gameobje altınd atoplarsın sonra
             NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition(foodPrefab.transform.localScale.x) , Quaternion.identity);
-            //spawnedFood.GetComponent<Rigidbody>().isKinematic = true;
+
         }
 
         isFoodSpawned = true;
@@ -46,7 +46,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         {
             // belki bi gameobje altınd atoplarsın sonra
             NetworkObject spawnedFood = Runner.Spawn(obstaclePrefab, Utils.GetRandomSpawnPosition(obstaclePrefab.transform.localScale.x) , Quaternion.identity);
-            //spawnedFood.GetComponent<Rigidbody>().isKinematic = true;
+
         }
 
         isObstacleSpawned = true;
