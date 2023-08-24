@@ -57,6 +57,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         for (int i = 0; i < numberOfBotsToSpawn; i++)
         {
             NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(BotPrefab.transform.localScale.x), Quaternion.identity);
+            Debug.Log("username : " + Utils.GetRandomBotName());
         }
 
         isBotSpawned = true;

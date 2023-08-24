@@ -31,7 +31,8 @@ public class BotController : NetworkBehaviour
             Runner.GetPhysicsScene().OverlapSphere(transform.position, 15f, hitcolliders, foodLayerMask, QueryTriggerInteraction.UseGlobal);
             foreach (Collider col in hitcolliders)
             {
-                foodTargets.Add(col.GetComponent<NetworkObject>());
+                if(col.CompareTag("Food"))
+                    foodTargets.Add(col.GetComponent<NetworkObject>());
             }
             
             targetFood = foodTargets[Random.Range(0, foodTargets.Count)];
@@ -39,7 +40,7 @@ public class BotController : NetworkBehaviour
         else
         {
             Vector3 moveTarget = (targetFood.transform.position - transform.position).normalized;
-            botBody.AddForce(moveTarget * 6f, ForceMode.Acceleration);
+            botBody.AddForce(moveTarget * transform.localScale.magnitude, ForceMode.Acceleration);
         }
 
     }
@@ -59,7 +60,7 @@ public class BotController : NetworkBehaviour
 
         if (other.gameObject.CompareTag("Obstacle"))
         {
-            transform.localScale -= Vector3.one * 0.4f;
+            transform.localScale = Vector3.one * 1.5f;
             transform.position = Utils.GetRandomSpawnPosition(transform.localScale.x);
         }
     }
