@@ -40,7 +40,7 @@ public class PlayerStateController : NetworkBehaviour
     
     // main
     private Rigidbody rb;
-    [SerializeField] private Transform InterpolationObj;
+    public Transform InterpolationObj;
 
 
     public void Awake()
@@ -66,7 +66,7 @@ public class PlayerStateController : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         // to make sure that spawned parts will follow the main player
-        
+        /*
         if (splittedPieces.Count > 0)
         {
             foreach (NetworkObject piece in splittedPieces.ToArray())
@@ -82,7 +82,9 @@ public class PlayerStateController : NetworkBehaviour
                     }
                 }
             }
+        
         }
+            */
 
         
     }
@@ -101,7 +103,7 @@ public class PlayerStateController : NetworkBehaviour
         }
         
         // check if colliding with obstacle
-        else if (other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("collided with obstacle");
             // call split function
@@ -117,7 +119,7 @@ public class PlayerStateController : NetworkBehaviour
         }
 
         // other collision checks for  player pieces, other players and bot players
-        else if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("SplittedPiece"))
         {
             Debug.Log("collided with playerpiece");
   
@@ -129,6 +131,19 @@ public class PlayerStateController : NetworkBehaviour
             // to do :  botsa ve benden büyükse game over, botsa ve benden küçükse ben yedim
             // ben botsam ama input auhtorityliyi yersem onun oyunu bitti o beni yerse devam
 
+        }
+
+        else if(other.gameObject.CompareTag("Bot"))
+        {
+            Debug.Log("collided with bot");
+            if (other.transform.localScale.x > NetworkedSize)
+            {
+                Debug.Log("bot is bigger than you");
+            }
+            
+            Debug.Log("player is bigger than bot");
+            other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
+                
         }
 
         // Game over if its size is smaller 
@@ -239,6 +254,7 @@ public class PlayerStateController : NetworkBehaviour
     public void InitializeBeforeSplitPartSpawn(NetworkRunner runner, NetworkObject networkObject)
     {
         networkObject.GetComponent<MeshRenderer>().material.color = NetworkedColor;
+        networkObject.GetComponent<SpawnedCollisionObstacle>().SetSpawner(this);
     }
     
 
