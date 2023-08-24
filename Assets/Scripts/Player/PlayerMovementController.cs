@@ -34,7 +34,8 @@ public class PlayerMovementController : NetworkBehaviour
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
         localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
         controls = new PlayerControls();
-       
+        _playerStateController = rb.GetComponent<PlayerStateController>();
+
 
     }
 
