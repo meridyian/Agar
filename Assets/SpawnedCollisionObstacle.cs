@@ -9,22 +9,22 @@ using UnityEngine.UIElements;
 public class SpawnedCollisionObstacle : NetworkBehaviour
 {
     
-    
     public void OnCollisionEnter(Collision other)
     {
 
         if (other.transform.CompareTag("Obstacle"))
         {
-            Destroy(gameObject);
-            transform.parent.GetComponent<PlayerStateController>().splittedPieces.Remove(this.GetComponent<NetworkObject>());
+            PlayerStateController.StateInstance.splittedPieces.Remove(this.GetComponent<NetworkObject>());
+            Runner.Despawn(transform.GetComponent<NetworkObject>());
+           
         }
         
         if (other.gameObject.CompareTag("Food"))
         {
             Debug.Log("Splitted piece collided with food");
-            transform.parent.GetComponent<PlayerStateController>().NetworkedSize +=  0.2f;
-            Destroy(gameObject);
-            transform.parent.GetComponent<PlayerStateController>().splittedPieces.Remove(this.GetComponent<NetworkObject>());
+            PlayerStateController.StateInstance.NetworkedSize +=  0.2f;
+            Runner.Despawn(transform.GetComponent<NetworkObject>());
+            
             
         }
        
