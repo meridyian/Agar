@@ -462,21 +462,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  isBot: 0
   MeshRenderer: {fileID: 5509150460477940520}
-  _playerSize: 1
-  _playerScore: 0
   _NetworkedColor: {r: 0, g: 0, b: 0, a: 0}
+  _NetworkedSize: 1
+  playerScore: 0
   splitRadius: 2
-  splittedPiecePref: {fileID: 4255914972489698455, guid: 619489efd7915904e8b2310da9d2cc55, type: 3}
-  foodLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  foodTarget: []
-  hitcolliders:
-  - {fileID: 0}
-  - {fileID: 0}
   splittedPieces: []
+  splittedPiecePref: {fileID: 4255914972489698455, guid: 619489efd7915904e8b2310da9d2cc55, type: 3}
   InterpolationObj: {fileID: 5509150461440897862}
 --- !u!1 &5509150460524699754
 GameObject:
@@ -1328,7 +1320,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   localCamera: {fileID: 0}
-  splitPressed: 0
   m_movement: {x: 0, y: 0, z: 0}
 --- !u!1 &5733364339254109275
 GameObject:
