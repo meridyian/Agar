@@ -15,7 +15,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     [SerializeField] private GameObject obstaclePrefab;
     
     // bot attributes
-    private const int desiredNumberofBots = 5;
+    private const int desiredNumberofBots = 7;
     
     // control attributes
     private bool isFoodSpawned = false;

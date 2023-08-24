@@ -188,6 +188,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7381768446236811115}
+  - {fileID: 4350536585001701648}
   SimulationBehaviours: []
 --- !u!114 &4350536585001701648
 MonoBehaviour:
@@ -201,6 +202,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a4a4a5136d5a4c768669099cd4fbb54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  foodLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  foodTargets: []
+  hitcolliders: []
 --- !u!1 &3484337131792011726
 GameObject:
   m_ObjectHideFlags: 0

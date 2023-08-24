@@ -33,10 +33,7 @@ public class PlayerStateController : NetworkBehaviour
     public List<NetworkObject> splittedPieces = new List<NetworkObject>();
     public GameObject splittedPiecePref;
     
-    // food collection related 
-    [SerializeField] private LayerMask foodLayerMask;
-    [SerializeField] List<GameObject> foodTarget;
-    [SerializeField] Collider[] hitcolliders;
+
     
     // main
     private Rigidbody rb;
