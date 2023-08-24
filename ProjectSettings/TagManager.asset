@@ -7,6 +7,7 @@ TagManager:
   - Food
   - Obstacle
   - SplittedPiece
+  - Bot
   layers:
   - Default
   - TransparentFX

@@ -15,22 +15,23 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     [SerializeField] private GameObject obstaclePrefab;
     
     // bot attributes
-    private const int desiredNumberofPlayers = 3;
+    private const int desiredNumberofBots = 5;
     
     // control attributes
     private bool isFoodSpawned = false;
     private bool isObstacleSpawned = false;
+    private bool isBotSpawned = false;
+
     
     // to hold spawned bots
     public List<NetworkObject> botsList = new List<NetworkObject>();
-    
     
     
     // spawn foods, you might make them static later on
 
     public void SpawnFood()
     {
-        for (int i = 0; i < 300; i++)
+        for (int i = 0; i < 350; i++)
         {
             NetworkObject spawnedFood = Runner.Spawn(foodPrefab, Utils.GetRandomSpawnPosition(foodPrefab.transform.localScale.x) , Quaternion.identity);
         }
@@ -52,19 +53,22 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     // check the current number of players you have, if it is not enough spawn bots
     public void SpawnBots()
     {
-        int numberOfBotsToSpawn = desiredNumberofPlayers - Runner.SessionInfo.PlayerCount - botsList.Count;
+        int numberOfBotsToSpawn = desiredNumberofBots - Runner.SessionInfo.PlayerCount - botsList.Count;
         for (int i = 0; i < numberOfBotsToSpawn; i++)
         {
-            NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(BotPrefab.transform.localScale.x), Quaternion.identity,null, InitializeBeforeBotSpawn);
+            NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(BotPrefab.transform.localScale.x), Quaternion.identity);
         }
+
+        isBotSpawned = true;
     }
 
     
-
+    /*
     public void InitializeBeforeBotSpawn(NetworkRunner runner, NetworkObject networkObject)
     {
         //networkObject.GetComponent<PlayerStateController>().isBot = true;
     }
+    */
     
     public void Spawned()
     {
@@ -82,6 +86,8 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
                 SpawnFood();
             if(!isObstacleSpawned)
                 SpawnObstacle();
+            if(!isBotSpawned)
+                SpawnBots();
         }
     }
 }
