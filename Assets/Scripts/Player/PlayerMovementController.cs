@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using Fusion;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,16 +23,19 @@ public class PlayerMovementController : NetworkBehaviour
     private Rigidbody rb;
     
     //movement
+    
     private PlayerControls controls;
     private Vector2 moveInput;
     public Vector3 m_movement;
     private float playerSpeed = 3f;
 
+    
     // for collision detection
 
      void Awake()
     {
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
+        
         localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
         controls = new PlayerControls();
         _playerStateController = rb.GetComponent<PlayerStateController>();
