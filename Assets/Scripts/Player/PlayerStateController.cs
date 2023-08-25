@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class PlayerStateController : NetworkBehaviour
 {
@@ -22,9 +22,13 @@ public class PlayerStateController : NetworkBehaviour
     
     // size and score change related networked properties
     [Networked(OnChanged = nameof(NetworkSizeChanged))]
-    public float NetworkedSize { get; set; } = 1.0f;
+    public float NetworkedSize { get; set; } = 0f;
 
-    [Networked(OnChanged = nameof(NetworkScoreChanged))]
+
+    public Text playerScoretext { get; set; }
+    
+        
+    //[Networked(OnChanged = nameof(NetworkScoreChanged))]
     public float playerScore { get; set; }
     
 
@@ -47,6 +51,7 @@ public class PlayerStateController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         InterpolationObj = GetComponentInChildren<Transform>();
         MeshRenderer = GetComponent<MeshRenderer>();
+        playerScoretext = transform.parent.GetChild(2).GetChild(1).GetComponentInChildren<Text>();
 
         if (StateInstance == null)
         {
@@ -57,6 +62,8 @@ public class PlayerStateController : NetworkBehaviour
     public override void Spawned()
     {
         playerScore = 0;
+       
+        //playerScoretext.text = "SCORE : " + playerScore;
         // set random color
         NetworkedColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1f);
     }
@@ -84,9 +91,10 @@ public class PlayerStateController : NetworkBehaviour
         
         }
             */
-        DealScoreRpc(playerScore);
+       
 
-        
+
+
     }
 
     
@@ -156,19 +164,33 @@ public class PlayerStateController : NetworkBehaviour
     // since score will be related with size, they can be managed with one Change action
     private static void NetworkSizeChanged(Changed<PlayerStateController> changed)
     {
+
         Vector3 newScale = Vector3.one * changed.Behaviour.NetworkedSize;
         changed.Behaviour.rb.transform.localScale = newScale;
         Debug.Log("playerSize" + changed.Behaviour.rb.transform.localScale);
+
+        //float playerScore = 0f;
+        float playerScore =  changed.Behaviour.NetworkedSize * 20f ;
+        changed.Behaviour.playerScore = playerScore;
+        changed.Behaviour.playerScoretext.text = "SCORE : " + playerScore;
+        Debug.Log("playerscore" + playerScore);
+        Debug.Log("Networked playerscoretext" + changed.Behaviour.playerScoretext.text);
+        Debug.Log("playerscoretext" + changed.Behaviour.playerScore);
         
 
-
-    }
-    private static void NetworkScoreChanged(Changed<PlayerStateController> changed)
-    {
+        
+        //float playerScore = 0f;
+       
+        
+        /*
         float playerScore = changed.Behaviour.NetworkedSize * 20f;
         changed.Behaviour.playerScore = playerScore;
         Debug.Log("changed score" + changed.Behaviour.playerScore);
+
+*/
+
     }
+
     
     
     
@@ -263,14 +285,6 @@ public class PlayerStateController : NetworkBehaviour
         networkObject.GetComponent<MeshRenderer>().material.color = NetworkedColor;
         networkObject.GetComponent<SpawnedCollisionObstacle>().SetSpawner(this);
     }
-    
-    
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void DealScoreRpc(float score)
-    {
-        playerScore = score;
-    }
-
     
     
   

@@ -11,7 +11,7 @@ public class DynamicScrollView : MonoBehaviour
     [SerializeField] private GameObject scoreTextPrefab;
     
     
-    public void CreateContent(string playername, float playerSize)
+    public void CreateContent(string playername, string playerSize)
     {
         GameObject newPlayerScore = Instantiate(scoreTextPrefab, scrollViewContent);
         Text scoreText = newPlayerScore.GetComponent<Text>();
