@@ -23,9 +23,11 @@ public class PlayerStateController : NetworkBehaviour
     // size and score change related networked properties
     [Networked(OnChanged = nameof(NetworkSizeChanged))]
     public float NetworkedSize { get; set; } = 1.0f;
+
+    [Networked(OnChanged = nameof(NetworkScoreChanged))]
+    public float playerScore { get; set; }
     
-    public float playerScore;
-    
+
     // split controls
     private bool splitPressed;
     public float splitRadius = 2f;
@@ -82,6 +84,7 @@ public class PlayerStateController : NetworkBehaviour
         
         }
             */
+        DealScoreRpc(playerScore);
 
         
     }
@@ -157,11 +160,18 @@ public class PlayerStateController : NetworkBehaviour
         changed.Behaviour.rb.transform.localScale = newScale;
         Debug.Log("playerSize" + changed.Behaviour.rb.transform.localScale);
         
+
+
+    }
+    private static void NetworkScoreChanged(Changed<PlayerStateController> changed)
+    {
         float playerScore = changed.Behaviour.NetworkedSize * 20f;
         changed.Behaviour.playerScore = playerScore;
         Debug.Log("changed score" + changed.Behaviour.playerScore);
-
     }
+    
+    
+    
     
     // color change when spawned, splietted pieces should be spawned with the same color
     private static void NetworkColorChanged(Changed<PlayerStateController> changed)
@@ -254,6 +264,12 @@ public class PlayerStateController : NetworkBehaviour
         networkObject.GetComponent<SpawnedCollisionObstacle>().SetSpawner(this);
     }
     
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void DealScoreRpc(float score)
+    {
+        playerScore = score;
+    }
 
     
     
