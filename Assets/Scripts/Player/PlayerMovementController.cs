@@ -1,7 +1,7 @@
 
 using Cinemachine;
 using Fusion;
-
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 
@@ -25,8 +25,11 @@ public class PlayerMovementController : NetworkBehaviour
     private PlayerControls controls;
     private Vector2 moveInput;
     public Vector3 m_movement;
-    private float playerSpeed = 3f;
+    //private float playerSpeed = 3f;
 
+    
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float maxSpeed = 5f;
     
     // for collision detection
 
@@ -64,11 +67,32 @@ public class PlayerMovementController : NetworkBehaviour
     {
         if (Object.HasStateAuthority)
         {
+            /* movement with joystick controll
+             
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
             rb.AddForce(m_movement * playerSpeed);
+            */
             
+            // MOVE WITH MOUSE
+            
+            //Vector2 mousePosition =  Mouse.current.position.ReadValue();
+            Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>();
+            //m_movement.Set(mousePosition.x,0f,mousePosition.y);
+            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, 0f, mousePosition.y));
+            targetPosition.y = transform.position.y;
+            Vector3 direction = (targetPosition - transform.position).normalized;
+            // Debug.Log("Target Position: " + targetPosition);
+            // Apply force in the desired direction
+            rb.AddForce(direction * moveSpeed , ForceMode.Acceleration);
+
+            // Limit the maximum speed
+            if (rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * maxSpeed;
+            }
+
         }
         
 
