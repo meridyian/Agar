@@ -723,7 +723,6 @@ MonoBehaviour:
   MeshRenderer: {fileID: 5509150460477940520}
   _NetworkedColor: {r: 0, g: 0, b: 0, a: 0}
   _NetworkedSize: 1
-  playerScoretext: {fileID: 0}
   splitRadius: 2
   splittedPieces: []
   splittedPiecePref: {fileID: 4255914972489698455, guid: 619489efd7915904e8b2310da9d2cc55, type: 3}
@@ -1373,7 +1372,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 5509150461440897862}
   m_Lens:
-    FieldOfView: 40
+    FieldOfView: 60
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -1638,7 +1637,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 6.5, z: -8.76}
+  m_FollowOffset: {x: 0, y: 6, z: -7}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
