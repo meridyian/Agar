@@ -1775,6 +1775,8 @@ MonoBehaviour:
   _interpolationDataSource: 0
   localCamera: {fileID: 0}
   m_movement: {x: 0, y: 0, z: 0}
+  moveSpeed: 2
+  maxSpeed: 5
 --- !u!1 &5733364339254109275
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,7 +2044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7433156839575199689
 RectTransform:
   m_ObjectHideFlags: 0

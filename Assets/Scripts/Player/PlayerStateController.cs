@@ -28,7 +28,7 @@ public class PlayerStateController : NetworkBehaviour
     
         
     //[Networked(OnChanged = nameof(NetworkScoreChanged))]
-    public float playerScore { get; set; }
+    public int playerScore { get; set; }
     
 
     // split controls
@@ -171,25 +171,13 @@ public class PlayerStateController : NetworkBehaviour
         Debug.Log("playerSize" + changed.Behaviour.rb.transform.localScale);
 
         //float playerScore = 0f;
-        float playerScore =  changed.Behaviour.NetworkedSize * 20f ;
+        int playerScore =  Mathf.RoundToInt(changed.Behaviour.NetworkedSize * 20f);
         changed.Behaviour.playerScore = playerScore;
         changed.Behaviour.playerScoretext.text = "SCORE : " + playerScore;
-        Debug.Log("playerscore" + playerScore);
+        Debug.Log("playerscore int" + changed.Behaviour.playerScore);
+        Debug.Log("playerscore float" + changed.Behaviour.NetworkedSize * 20f);
         Debug.Log("Networked playerscoretext" + changed.Behaviour.playerScoretext.text);
         Debug.Log("playerscoretext" + changed.Behaviour.playerScore);
-        
-
-        
-        //float playerScore = 0f;
-       
-        
-        /*
-        float playerScore = changed.Behaviour.NetworkedSize * 20f;
-        changed.Behaviour.playerScore = playerScore;
-        Debug.Log("changed score" + changed.Behaviour.playerScore);
-
-*/
-
     }
 
     
