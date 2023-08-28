@@ -13,7 +13,7 @@ public class PlayerDataNetworked : NetworkBehaviour
     
     public Text _playernameEntryText;
     public static PlayerDataNetworked NetworkedDataInstance;
-
+    private DynamicScrollView _dynamicScrollView;
 
 
     private void Awake()
@@ -22,6 +22,7 @@ public class PlayerDataNetworked : NetworkBehaviour
         {
             NetworkedDataInstance = this;
         }
+        _dynamicScrollView = FindObjectOfType<DynamicScrollView>();
 
     }
 
@@ -36,6 +37,7 @@ public class PlayerDataNetworked : NetworkBehaviour
             DealNameRpc(userName);
             _playernameEntryText.text = UserName;
             Debug.Log(UserName + "joined from state authority");
+            //_dynamicScrollView.CreateContent(UserName);
         }
 
     }
@@ -49,6 +51,7 @@ public class PlayerDataNetworked : NetworkBehaviour
     public void DealNameRpc(string name)
     {
         UserName = name;
+        _dynamicScrollView.CreateContent(UserName);
     }
 
 }

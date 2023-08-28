@@ -51,7 +51,7 @@ public class PlayerStateController : NetworkBehaviour
         InterpolationObj = GetComponentInChildren<Transform>();
         MeshRenderer = GetComponent<MeshRenderer>();
         playerScoretext = transform.parent.GetChild(2).GetChild(1).GetComponentInChildren<Text>();
-
+       
         if (StateInstance == null)
         {
             StateInstance = this;
@@ -61,8 +61,6 @@ public class PlayerStateController : NetworkBehaviour
     public override void Spawned()
     {
         playerScore = 0;
-       
-        //playerScoretext.text = "SCORE : " + playerScore;
         // set random color
         NetworkedColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f),1f);
     }

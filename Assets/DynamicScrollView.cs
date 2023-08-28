@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DynamicScrollView : MonoBehaviour
+public class DynamicScrollView : NetworkBehaviour
 {
     
     [SerializeField] private Transform scrollViewContent;
 
-    [SerializeField] private GameObject scoreTextPrefab;
+    [SerializeField] private GameObject joinedTextPrefab;
     
     
-    public void CreateContent(string playername, string playerSize)
+    public void CreateContent(string playername)
     {
-        GameObject newPlayerScore = Instantiate(scoreTextPrefab, scrollViewContent);
-        Text scoreText = newPlayerScore.GetComponent<Text>();
-        scoreText.text = "name : " + playername + ", Size : " + playerSize ;
+        GameObject newPlayerJoined = Instantiate(joinedTextPrefab, scrollViewContent);
+        Text joinedText = newPlayerJoined.GetComponent<Text>();
+        joinedText.text =  playername + " is in the housee !!" ;
         
     }
 }
