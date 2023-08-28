@@ -14,7 +14,7 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     [SerializeField] private GameObject obstaclePrefab;
     
     // bot attributes
-    private const int desiredNumberofBots = 7;
+    private const int desiredNumberofBots = 9;
     
     // control attributes
     private bool isFoodSpawned = false;
@@ -24,6 +24,14 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
     
     // to hold spawned bots
     public List<NetworkObject> botsList = new List<NetworkObject>();
+    
+    private DynamicScrollView _dynamicScrollView;
+
+
+    public void Awake()
+    {
+        _dynamicScrollView = FindObjectOfType<DynamicScrollView>();
+    }
     
     
     // spawn foods, you might make them static later on
@@ -56,7 +64,10 @@ public class ObjectSpawner : SimulationBehaviour, ISpawned
         for (int i = 0; i < numberOfBotsToSpawn; i++)
         {
             NetworkObject spawnedBots = Runner.Spawn(BotPrefab, Utils.GetRandomSpawnPosition(BotPrefab.transform.localScale.x), Quaternion.identity);
-            Debug.Log("username : " + Utils.GetRandomBotName());
+            string botname = Utils.GetRandomBotName();
+            Debug.Log("username : " + botname);
+            _dynamicScrollView.CreateContent(botname);
+            
         }
 
         isBotSpawned = true;
