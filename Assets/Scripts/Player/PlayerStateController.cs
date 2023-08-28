@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
@@ -105,8 +104,10 @@ public class PlayerStateController : NetworkBehaviour
         
         if (other.gameObject.CompareTag("Food"))
         {
+            
             Debug.Log("collided with food");
-            NetworkedSize += NetworkedSize * 0.2f;
+            NetworkedSize += 0.07f;
+            Debug.Log(NetworkedSize + "collided food");
             other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
         }
         
@@ -131,7 +132,7 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with playerpiece");
   
-            NetworkedSize +=  NetworkedSize * 0.3f;
+            NetworkedSize +=  0.3f;
             splittedPieces.Remove(other.transform.GetComponent<NetworkObject>()); 
             Runner.Despawn(other.transform.GetComponent<NetworkObject>());
 

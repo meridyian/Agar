@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using Fusion;
-using TreeEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +10,6 @@ public class PlayerDataNetworked : NetworkBehaviour
     
     [Networked(OnChanged = nameof(UsernameChanged))]
     public string UserName { get;  set; }
-
-    
     
     public Text _playernameEntryText;
     public static PlayerDataNetworked NetworkedDataInstance;

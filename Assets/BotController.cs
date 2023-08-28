@@ -1,8 +1,6 @@
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Linq;
 using Fusion;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BotController : NetworkBehaviour
@@ -40,7 +38,7 @@ public class BotController : NetworkBehaviour
         else
         {
             Vector3 moveTarget = (targetFood.transform.position - transform.position).normalized;
-            botBody.AddForce(moveTarget * transform.localScale.magnitude, ForceMode.Acceleration);
+            botBody.AddForce(moveTarget * 1.5f, ForceMode.Acceleration);
         }
 
     }
