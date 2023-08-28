@@ -67,16 +67,16 @@ public class PlayerMovementController : NetworkBehaviour
     {
         if (Object.HasStateAuthority)
         {
-            /* movement with joystick controll
+            //movement with joystick controll
              
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
-            rb.AddForce(m_movement * playerSpeed);
-            */
+            rb.AddForce(m_movement * moveSpeed);
+            
             
             // MOVE WITH MOUSE
-            
+            /*
             //Vector2 mousePosition =  Mouse.current.position.ReadValue();
             Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>();
             //m_movement.Set(mousePosition.x,0f,mousePosition.y);
@@ -92,6 +92,7 @@ public class PlayerMovementController : NetworkBehaviour
             {
                 rb.velocity = rb.velocity.normalized * maxSpeed;
             }
+            */
 
         }
         

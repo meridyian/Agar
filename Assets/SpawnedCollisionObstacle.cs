@@ -50,6 +50,17 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
         {
             Debug.Log("Splitted piece collided with food");
             //PlayerStateController.StateInstance.NetworkedSize +=  0.2f;
+            if (transform.localScale.magnitude >= other.transform.localScale.magnitude)
+            {
+                if(transform.localScale.magnitude<spawner.NetworkedSize)
+                    transform.localScale += new Vector3(0.02f, 0.02f, 0.02f);
+                else
+                {
+                    spawner.NetworkedSize += 0.05f;
+                    Runner.Despawn(transform.GetComponent<NetworkObject>());
+                }
+            }
+            
             spawner.NetworkedSize += 0.05f;
             Runner.Despawn(transform.GetComponent<NetworkObject>());
             

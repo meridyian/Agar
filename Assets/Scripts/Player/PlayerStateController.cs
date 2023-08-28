@@ -114,7 +114,7 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with obstacle");
             // call split function
-            if (NetworkedSize > 1.5f)
+            if (NetworkedSize > 1f)
             {
                 ObstacleSplit();
             }
