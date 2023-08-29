@@ -52,11 +52,11 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
             //PlayerStateController.StateInstance.NetworkedSize +=  0.2f;
             if (transform.localScale.magnitude >= other.transform.localScale.magnitude)
             {
-                if(transform.localScale.magnitude<spawner.NetworkedSize)
+                if(transform.localScale.magnitude <= spawner.NetworkedSize)
                     transform.localScale += new Vector3(0.02f, 0.02f, 0.02f);
                 else
                 {
-                    spawner.NetworkedSize += 0.05f;
+                    spawner.NetworkedSize += 0.02f;
                     Runner.Despawn(transform.GetComponent<NetworkObject>());
                 }
             }
@@ -66,15 +66,7 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
             
         }
 
-        /*
-        //collsiion with bot
-        if (other.transform.CompareTag("Bot"))
-        {
-            spawner.splittedPieces.Remove(GetComponent<NetworkObject>());
-            spawner.NetworkedSize -= 0.1f;
-            Runner.Despawn(transform.GetComponent<NetworkObject>());
-        }
-        */
+        
        
     }
 

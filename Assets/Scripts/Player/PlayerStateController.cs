@@ -120,7 +120,7 @@ public class PlayerStateController : NetworkBehaviour
             }
             else
             {
-                NetworkedSize = 0.3f;
+                NetworkedSize = 0.4f;
                 Debug.Log("your size is less than 1.5, reduce ");
             }
         }
@@ -130,7 +130,8 @@ public class PlayerStateController : NetworkBehaviour
         {
             Debug.Log("collided with playerpiece");
   
-            NetworkedSize +=  0.3f;
+            NetworkedSize += other.transform.localScale.x;
+            Debug.Log(NetworkedSize);
             splittedPieces.Remove(other.transform.GetComponent<NetworkObject>()); 
             Runner.Despawn(other.transform.GetComponent<NetworkObject>());
 
@@ -210,7 +211,7 @@ public class PlayerStateController : NetworkBehaviour
     public void SpaceSplit()
     {
         // update player size and spawned piece size as needed
-        NetworkedSize -= NetworkedSize * 0.5f;
+        NetworkedSize *=0.5f;
         Vector3 playersizeVector = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
         
         float angle = 360f;
@@ -242,8 +243,10 @@ public class PlayerStateController : NetworkBehaviour
     // make them your child so that you can destroy when collided with obstacle
     public void ObstacleSplit()
     {
-        NetworkedSize = 1f;
-        int numSplitParts = 4;
+        
+        int numSplitParts = 3;
+        NetworkedSize /= numSplitParts;
+
         
         for (int i = 0; i < numSplitParts; i++)
         {
@@ -252,7 +255,7 @@ public class PlayerStateController : NetworkBehaviour
             Vector3 spawnPosition = transform.position + offset;
             NetworkObject splitPart = Runner.Spawn(splittedPiecePref, spawnPosition, Quaternion.identity,null, InitializeBeforeSplitPartSpawn);
             //splitPart.GetComponent<MeshRenderer>().material.color = NetworkedColor;
-            splitPart.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            splitPart.transform.localScale = new Vector3(NetworkedSize, NetworkedSize, NetworkedSize);
             splittedPieces.Add(splitPart);
             
             // you might face with problems if you add a network object as a child of other network obj
