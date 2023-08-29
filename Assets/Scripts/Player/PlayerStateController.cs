@@ -50,7 +50,7 @@ public class PlayerStateController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         InterpolationObj = GetComponentInChildren<Transform>();
         MeshRenderer = GetComponent<MeshRenderer>();
-        playerScoretext = transform.parent.GetChild(2).GetChild(1).GetComponentInChildren<Text>();
+        playerScoretext = transform.parent.GetChild(3).GetChild(1).GetComponentInChildren<Text>();
        
         if (StateInstance == null)
         {

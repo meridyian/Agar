@@ -21,6 +21,9 @@ public class GameSetter : MonoBehaviour
     [SerializeField] private Text usernamePlaceHolder = null;
     [SerializeField] private string gameSceneName = null;
     public GameObject joinButton;
+    public bool isNameProvided;
+
+    [SerializeField] private Text enterNamePopup;
 
     
     public void Start()
@@ -45,6 +48,7 @@ public class GameSetter : MonoBehaviour
     }
     
     
+    
     public void SetPlayerData()
     {
         // saves the userName data provided by user to playerData object
@@ -57,10 +61,11 @@ public class GameSetter : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(userName.text))
         {
-            playerData.SetUserName(usernamePlaceHolder.text);
+            isNameProvided = false;
         }
         else
         {
+            isNameProvided = true;
             playerData.SetUserName(userName.text);
 
         }
@@ -70,7 +75,13 @@ public class GameSetter : MonoBehaviour
     public void StartSharedSession()
     {
         SetPlayerData();
-        StartGame(GameMode.Shared, gameSceneName);
+        if(isNameProvided)
+            StartGame(GameMode.Shared, gameSceneName);
+        else
+        {
+            enterNamePopup.gameObject.SetActive(true);
+        }
+
     }
 
     private async void StartGame(GameMode mode, string sceneName)
@@ -93,5 +104,14 @@ public class GameSetter : MonoBehaviour
         //for another functions to be executed, for safety reasons (waiting the fusion to be connected)
         await runnerInstance.StartGame(startGameArgs);
         runnerInstance.SetActiveScene(sceneName);
+    }
+
+    
+    // assign it to input field
+    public void TogglePopup()
+    {
+        if (!isNameProvided) 
+            enterNamePopup.gameObject.SetActive(false);
+
     }
 }

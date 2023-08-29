@@ -19,6 +19,7 @@ public class PlayerMovementController : NetworkBehaviour
     
     // other components
     private Rigidbody rb;
+    private Canvas playerNameCanvas;
     
     //movement
     
@@ -36,8 +37,8 @@ public class PlayerMovementController : NetworkBehaviour
      void Awake()
     {
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
-        
         localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
+        playerNameCanvas = transform.GetChild(2).GetComponent<Canvas>();
         controls = new PlayerControls();
         _playerStateController = rb.GetComponent<PlayerStateController>();
 
@@ -55,6 +56,7 @@ public class PlayerMovementController : NetworkBehaviour
             localCamera.transform.parent = null;
             controls.Player.Enable();
             cameraMainTransform = Camera.main.transform;
+            
           
         }
         else
@@ -73,8 +75,10 @@ public class PlayerMovementController : NetworkBehaviour
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
             rb.AddForce(m_movement * moveSpeed);
-            
-            
+
+            playerNameCanvas.GetComponent<RectTransform>().transform.position = rb.transform.position + Vector3.up;
+
+
             // MOVE WITH MOUSE
             /*
             //Vector2 mousePosition =  Mouse.current.position.ReadValue();
