@@ -1173,7 +1173,6 @@ GameObject:
   - component: {fileID: 5509150460832955723}
   - component: {fileID: 5509150460832955722}
   - component: {fileID: 5509150460832955721}
-  - component: {fileID: 7534804907151839319}
   m_Layer: 0
   m_Name: 'NameCanvas '
   m_TagString: Untagged
@@ -1285,22 +1284,8 @@ MonoBehaviour:
   NetworkGuid:
     RawGuidValue: 00000000000000000000000000000000
   NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 7534804907151839319}
+  NetworkedBehaviours: []
   SimulationBehaviours: []
---- !u!114 &7534804907151839319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5509150460832955724}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ef5780e83a34bcfbf0703bcfd65a47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
 --- !u!1 &5509150461089714213
 GameObject:
   m_ObjectHideFlags: 0

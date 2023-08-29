@@ -76,8 +76,8 @@ public class PlayerMovementController : NetworkBehaviour
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
             rb.AddForce(m_movement * moveSpeed);
 
-            playerNameCanvas.GetComponent<RectTransform>().transform.position = rb.transform.position + Vector3.up;
-
+            playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
+            //playerNameCanvas.GetComponent<RectTransform>().transform.rotation 
 
             // MOVE WITH MOUSE
             /*
