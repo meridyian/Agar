@@ -1,6 +1,6 @@
-
 using Cinemachine;
 using Fusion;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
@@ -20,6 +20,7 @@ public class PlayerMovementController : NetworkBehaviour
     // other components
     private Rigidbody rb;
     private Canvas playerNameCanvas;
+    [SerializeField] private LayerMask groundLayer;
     
     //movement
     
@@ -70,23 +71,46 @@ public class PlayerMovementController : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             //movement with joystick controll
-             
+        /*
             moveInput = controls.Player.Move.ReadValue<Vector2>();
             m_movement.Set(moveInput.x, 0f,moveInput.y);
             m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
             rb.AddForce(m_movement * moveSpeed);
+            
 
             playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
+            */
             //playerNameCanvas.GetComponent<RectTransform>().transform.rotation 
-
             // MOVE WITH MOUSE
-            /*
+
+            Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>(); 
+            
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+            {
+                Vector3 spherePosition = rb.position;
+                Vector3 hitPoint = hit.point;
+
+                // Calculate the direction from sphere to hit point
+                Vector3 direction = (hitPoint - spherePosition).normalized;
+
+                // Apply force to the sphere in the calculated direction
+                rb.AddForce(direction * moveSpeed);
+            }
             //Vector2 mousePosition =  Mouse.current.position.ReadValue();
-            Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>();
+
             //m_movement.Set(mousePosition.x,0f,mousePosition.y);
-            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, 0f, mousePosition.y));
+            /*  
+           
+            Debug.Log("input controller position" + mousePosition);
+            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x,0.5f, mousePosition.y));
+            Debug.Log("screen transferred position" + targetPosition);
+            
             targetPosition.y = transform.position.y;
             Vector3 direction = (targetPosition - transform.position).normalized;
+            
             // Debug.Log("Target Position: " + targetPosition);
             // Apply force in the desired direction
             rb.AddForce(direction * moveSpeed , ForceMode.Acceleration);
@@ -97,11 +121,12 @@ public class PlayerMovementController : NetworkBehaviour
                 rb.velocity = rb.velocity.normalized * maxSpeed;
             }
             */
-
+            
         }
-        
-
     }
+
+   
+
 
 
 

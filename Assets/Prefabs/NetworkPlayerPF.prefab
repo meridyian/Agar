@@ -1805,6 +1805,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   localCamera: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
   m_movement: {x: 0, y: 0, z: 0}
   moveSpeed: 2
   maxSpeed: 5
