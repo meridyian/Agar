@@ -31,7 +31,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     
     [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float maxSpeed = 5f;
+    [SerializeField] private float maxSpeed = 4f;
     
     // for collision detection
 
@@ -66,23 +66,46 @@ public class PlayerMovementController : NetworkBehaviour
         }
     }
 
+    public void FixedUpdate()
+    {
+        // MOVE WITH MOUSE POSITION RAYCAST
+        Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>(); 
+            
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+        {
+            Vector3 playerPosition = rb.position;
+            Vector3 hitPoint = hit.point;
+
+            // Calculate the direction from sphere to hit point
+            m_movement = (hitPoint - playerPosition).normalized;
+        }
+    }
+
+    
+
     public override void FixedUpdateNetwork()
     {
         if (Object.HasStateAuthority)
         {
-            //movement with joystick controll
-        /*
-            moveInput = controls.Player.Move.ReadValue<Vector2>();
-            m_movement.Set(moveInput.x, 0f,moveInput.y);
-            m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
-            rb.AddForce(m_movement * moveSpeed);
+
+            if (m_movement != Vector3.zero)
+            {
+                rb.AddForce(m_movement * moveSpeed, ForceMode.Acceleration);
+                if (rb.velocity.magnitude > maxSpeed)
+                {
+                    rb.velocity = rb.velocity.normalized * maxSpeed;
+                    Debug.Log("from limitng" + rb.velocity);
+                }
+                Debug.Log("from adding" + rb.velocity);
+                playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
+                // Limit the maximum speed
+            }
             
-
-            playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
-            */
-            //playerNameCanvas.GetComponent<RectTransform>().transform.rotation 
-            // MOVE WITH MOUSE
-
+            /*
+            // MOVE WITH MOUSE POSITION RAYCAST
             Vector2 mousePosition = controls.Player.Look.ReadValue<Vector2>(); 
             
             Ray ray = Camera.main.ScreenPointToRay(mousePosition);
@@ -90,37 +113,43 @@ public class PlayerMovementController : NetworkBehaviour
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
             {
-                Vector3 spherePosition = rb.position;
+                Vector3 playerPosition = rb.position;
                 Vector3 hitPoint = hit.point;
 
                 // Calculate the direction from sphere to hit point
-                Vector3 direction = (hitPoint - spherePosition).normalized;
+                m_movement = (hitPoint - playerPosition).normalized;
 
                 // Apply force to the sphere in the calculated direction
-                rb.AddForce(direction * moveSpeed);
-            }
-            //Vector2 mousePosition =  Mouse.current.position.ReadValue();
+                rb.AddForce(m_movement * moveSpeed);
+                
+                playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
 
-            //m_movement.Set(mousePosition.x,0f,mousePosition.y);
-            /*  
-           
-            Debug.Log("input controller position" + mousePosition);
-            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x,0.5f, mousePosition.y));
-            Debug.Log("screen transferred position" + targetPosition);
-            
-            targetPosition.y = transform.position.y;
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            
-            // Debug.Log("Target Position: " + targetPosition);
-            // Apply force in the desired direction
-            rb.AddForce(direction * moveSpeed , ForceMode.Acceleration);
-
-            // Limit the maximum speed
-            if (rb.velocity.magnitude > maxSpeed)
-            {
-                rb.velocity = rb.velocity.normalized * maxSpeed;
+                // Limit the maximum speed
+                if (rb.velocity.magnitude > maxSpeed)
+                {
+                    rb.velocity = rb.velocity.normalized * maxSpeed;
+                }
             }
             */
+            
+            /*
+           //MOVE WITH JOYSTICK
+          
+           moveInput = controls.Player.Move.ReadValue<Vector2>();
+           m_movement.Set(moveInput.x, 0f,moveInput.y);
+           m_movement = Quaternion.AngleAxis(cameraMainTransform.eulerAngles.y, Vector3.up) * m_movement;
+           rb.AddForce(m_movement * moveSpeed);
+           
+
+           // MOVW WITH MOUSE POSITION AND SCREENTOWORLPOINT
+           Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x,0.5f, mousePosition.y));
+           targetPosition.y = transform.position.y;
+           Vector3 direction = (targetPosition - transform.position).normalized;
+           // Apply force 
+           rb.AddForce(direction * moveSpeed , ForceMode.Acceleration);
+
+          
+           */
             
         }
     }
