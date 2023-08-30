@@ -32,25 +32,15 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
             rb.AddForce(targetDir * 0.4f);
         }
     }
-    
-    
-    
-    public void OnCollisionEnter(Collision other)
-    {
 
-        if (other.transform.CompareTag("Obstacle"))
-        {
-            //PlayerStateController.StateInstance.splittedPieces.Remove(this.GetComponent<NetworkObject>());
-            spawner.splittedPieces.Remove(GetComponent<NetworkObject>());
-            Runner.Despawn(transform.GetComponent<NetworkObject>());
-           
-        }
-        
-        if (other.gameObject.CompareTag("Food"))
+
+    public void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("Food"))
         {
             Debug.Log("Splitted piece collided with food");
             //PlayerStateController.StateInstance.NetworkedSize +=  0.2f;
-            if (transform.localScale.magnitude >= other.transform.localScale.magnitude)
+            if (transform.localScale.magnitude >= collider.transform.localScale.magnitude)
             {
                 if(transform.localScale.magnitude <= spawner.NetworkedSize)
                     transform.localScale += new Vector3(0.02f, 0.02f, 0.02f);
@@ -66,8 +56,17 @@ public class SpawnedCollisionObstacle : NetworkBehaviour
             
         }
 
-        
-       
+    }
+    
+    public void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.CompareTag("Obstacle"))
+        {
+            //PlayerStateController.StateInstance.splittedPieces.Remove(this.GetComponent<NetworkObject>());
+            spawner.splittedPieces.Remove(GetComponent<NetworkObject>());
+            Runner.Despawn(transform.GetComponent<NetworkObject>());
+           
+        }
     }
 
 }

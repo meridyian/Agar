@@ -81,6 +81,7 @@ public class PlayerMovementController : NetworkBehaviour
 
             // Calculate the direction from sphere to hit point
             m_movement = (hitPoint - playerPosition).normalized;
+            
         }
     }
 

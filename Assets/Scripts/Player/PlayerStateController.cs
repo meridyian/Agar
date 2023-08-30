@@ -101,6 +101,8 @@ public class PlayerStateController : NetworkBehaviour
             Debug.Log(NetworkedSize + "collided food");
             collided.gameObject.transform.position = Utils.GetRandomSpawnPosition(collided.transform.localScale.x);
         }
+        
+
     }
 
     
@@ -126,8 +128,6 @@ public class PlayerStateController : NetworkBehaviour
                 Debug.Log("your size is less than 1.5, reduce ");
             }
         }
-
-        // other collision checks for  player pieces, other players and bot players
         if (other.gameObject.CompareTag("SplittedPiece"))
         {
             Debug.Log("collided with playerpiece");
@@ -143,6 +143,8 @@ public class PlayerStateController : NetworkBehaviour
 
         }
 
+        // other collision checks for  player pieces, other players and bot players
+       
         else if(other.gameObject.CompareTag("Bot"))
         {
             Debug.Log("collided with bot");
