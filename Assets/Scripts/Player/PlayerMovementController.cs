@@ -19,7 +19,7 @@ public class PlayerMovementController : NetworkBehaviour
     
     // other components
     private Rigidbody rb;
-    private Canvas playerNameCanvas;
+    [SerializeField] Canvas playerNameCanvas;
     [SerializeField] private LayerMask groundLayer;
     
     //movement
@@ -27,7 +27,9 @@ public class PlayerMovementController : NetworkBehaviour
     private PlayerControls controls;
     private Vector2 moveInput;
     public Vector3 m_movement;
+    public Vector3 canvasToPoint;
     //private float playerSpeed = 3f;
+    public Vector3 hitPoint;
 
     
     [SerializeField] private float moveSpeed = 2f;
@@ -39,7 +41,7 @@ public class PlayerMovementController : NetworkBehaviour
     {
         rb = transform.GetChild(0).GetComponent<Rigidbody>();
         localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
-        playerNameCanvas = transform.GetChild(2).GetComponent<Canvas>();
+        //playerNameCanvas = transform.GetChild(2).GetComponent<Canvas>();
         controls = new PlayerControls();
         _playerStateController = rb.GetComponent<PlayerStateController>();
 
@@ -77,8 +79,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
         {
             Vector3 playerPosition = rb.position;
-            Vector3 hitPoint = hit.point;
-
+            hitPoint = hit.point;
             // Calculate the direction from sphere to hit point
             m_movement = (hitPoint - playerPosition).normalized;
             
@@ -102,6 +103,10 @@ public class PlayerMovementController : NetworkBehaviour
                 }
                 Debug.Log("from adding" + rb.velocity);
                 playerNameCanvas.GetComponent<RectTransform>().transform.position =  new Vector3(rb.position.x , PlayerStateController.StateInstance.NetworkedSize + 1f, rb.position.z);
+                
+                float angle = Mathf.Atan2(hitPoint.z,hitPoint.x) * Mathf.Rad2Deg;
+                // Apply the rotation to the canvas
+                playerNameCanvas.GetComponent<Canvas>().transform.rotation = Quaternion.Euler(0f, angle, 0f);
                 // Limit the maximum speed
             }
             

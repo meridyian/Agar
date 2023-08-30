@@ -1805,10 +1805,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   localCamera: {fileID: 0}
+  playerNameCanvas: {fileID: 5509150460832955720}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   m_movement: {x: 0, y: 0, z: 0}
+  canvasToPoint: {x: 0, y: 0, z: 0}
+  hitPoint: {x: 0, y: 0, z: 0}
   moveSpeed: 2
   maxSpeed: 5
 --- !u!1 &5733364339254109275
