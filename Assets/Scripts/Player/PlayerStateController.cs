@@ -88,10 +88,19 @@ public class PlayerStateController : NetworkBehaviour
         
         }
             */
-       
+        
+    }
 
-
-
+    public void OnTriggerEnter(Collider collided)
+    {
+        if (collided.gameObject.CompareTag("Food"))
+        {
+            
+            Debug.Log("collided with food");
+            NetworkedSize += 0.07f;
+            Debug.Log(NetworkedSize + "collided food");
+            collided.gameObject.transform.position = Utils.GetRandomSpawnPosition(collided.transform.localScale.x);
+        }
     }
 
     
@@ -100,14 +109,7 @@ public class PlayerStateController : NetworkBehaviour
     {
         // when collided with food change its size and update score and position of the food
         
-        if (other.gameObject.CompareTag("Food"))
-        {
-            
-            Debug.Log("collided with food");
-            NetworkedSize += 0.07f;
-            Debug.Log(NetworkedSize + "collided food");
-            other.gameObject.transform.position = Utils.GetRandomSpawnPosition(other.transform.localScale.x);
-        }
+        
         
         // check if colliding with obstacle
         if (other.gameObject.CompareTag("Obstacle"))
