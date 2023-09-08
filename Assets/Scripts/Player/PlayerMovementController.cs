@@ -7,18 +7,18 @@ using UnityEngine;
 
 public class PlayerMovementController : NetworkBehaviour
 {
-    
+
     // This class controls only movement related processes
-    
+
     public static PlayerMovementController Local { get; set; }
     private PlayerStateController _playerStateController;
-    
+
     // camera settings
     public CinemachineVirtualCamera localCamera;
     private Transform cameraMainTransform;
-    
+
     // other components
-    private Rigidbody rb;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] Canvas playerNameCanvas;
     [SerializeField] private LayerMask groundLayer;
     
@@ -39,13 +39,8 @@ public class PlayerMovementController : NetworkBehaviour
 
      void Awake()
     {
-        rb = transform.GetChild(0).GetComponent<Rigidbody>();
-        localCamera = transform.GetChild(1).GetComponent<CinemachineVirtualCamera>();
-        //playerNameCanvas = transform.GetChild(2).GetComponent<Canvas>();
         controls = new PlayerControls();
         _playerStateController = rb.GetComponent<PlayerStateController>();
-
-
     }
 
     public override void Spawned()
@@ -60,7 +55,6 @@ public class PlayerMovementController : NetworkBehaviour
             controls.Player.Enable();
             cameraMainTransform = Camera.main.transform;
             
-          
         }
         else
         {
@@ -92,7 +86,6 @@ public class PlayerMovementController : NetworkBehaviour
     {
         if (Object.HasStateAuthority)
         {
-
             if (m_movement != Vector3.zero)
             {
                 rb.AddForce(m_movement * moveSpeed, ForceMode.Acceleration);
